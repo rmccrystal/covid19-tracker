@@ -2,5 +2,19 @@
 
 .infection-card {
   width: max-content;
-  color: $blue5;
+  //background-color: $light-gray5 !important;
+}
+
+.statistic {
+  font-size: 5rem;
+  margin: 0;
+}
+
+.statistic-container {
+  text-align: center;
+}
+
+.statistic-label {
+  font-family: monospace;
+  text-align: center;
 }

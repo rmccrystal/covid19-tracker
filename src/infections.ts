@@ -3,6 +3,9 @@ export class InfectionEntry {
     infections: number;
     dead: number;
     recovered: number;
+    get active(): number {      // Gets the number of active cases by subtracting the recovered from the infections
+        return this.infections - this.recovered;
+    }
 
     constructor(region: string, infections: number, dead: number, recovered: number) {
         this.region = region;
@@ -13,5 +16,5 @@ export class InfectionEntry {
 }
 
 export function GetInfections(): InfectionEntry[] {
-    return [new InfectionEntry("america", 100, 10, 50), new InfectionEntry("europe", 1000, 42, 523)]
+    return [new InfectionEntry("United States", 100, 10, 50), new InfectionEntry("Europe", 1000, 42, 523)]
 }

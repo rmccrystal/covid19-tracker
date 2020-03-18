@@ -4,6 +4,8 @@ import {Table, TableBody, TableCell, TableHeader, TableHeaderCell, TableRow} fro
 import {Card, Elevation, H2, InputGroup} from "@blueprintjs/core";
 import {FontAwesomeIcon} from "@fortawesome/react-fontawesome";
 import * as Icons from '@fortawesome/free-solid-svg-icons';
+import { Colors } from "@blueprintjs/core";
+import "./InfectionTable.scss"
 
 interface InfectionTableProps {
     entries: InfectionEntry[]
@@ -20,7 +22,7 @@ export default class InfectionTable extends Component<InfectionTableProps, Compo
     }
 
     render() {  // TODO: Add sorting
-        return <div className="container m-4">
+        return <div className="container-fluid mb-4 mt-4 col infection-table">
                 <Card elevation={Elevation.TWO}>
                 <H2 className="text-left">
                     {this.props.region}
@@ -43,6 +45,7 @@ export default class InfectionTable extends Component<InfectionTableProps, Compo
                                 </span>
                             </TableHeaderCell>
                             <TableHeaderCell>Infections</TableHeaderCell>
+                            <TableHeaderCell>Active Cases</TableHeaderCell>
                             <TableHeaderCell>Deaths</TableHeaderCell>
                             <TableHeaderCell>Recoveries</TableHeaderCell>
                         </TableRow>
@@ -70,9 +73,18 @@ export default class InfectionTable extends Component<InfectionTableProps, Compo
     renderEntry(entry: InfectionEntry, header: boolean = false) {
         return <TableRow>
             <TableCell>{entry.region}</TableCell>
-            <TableCell style={{color: "#5642A6"}}><FontAwesomeIcon icon={Icons.faInfoCircle}/> {entry.infections}</TableCell>
-            <TableCell style={{color: "#A82A2A"}}><FontAwesomeIcon icon={Icons.faSkull}/> {entry.dead}</TableCell>
-            <TableCell style={{color: "#0A6640"}}><FontAwesomeIcon icon={Icons.faHeartbeat}/> {entry.recovered}</TableCell>
+            <TableCell style={{color: Colors.INDIGO1}}>
+                <FontAwesomeIcon icon={Icons.faInfoCircle}/> {entry.infections}
+            </TableCell>
+            <TableCell style={{color: Colors.ORANGE1}}>
+                <FontAwesomeIcon icon={Icons.faBed}/> {entry.active}
+            </TableCell>
+            <TableCell style={{color: Colors.RED1}}>
+                <FontAwesomeIcon icon={Icons.faSkull}/> {entry.dead} <span className="text-monospace" style={{color: Colors.RED4}}>({Math.round((entry.dead/entry.infections)*100)}%)</span>
+            </TableCell>
+            <TableCell style={{color: Colors.GREEN1}}>
+                <FontAwesomeIcon icon={Icons.faHeartbeat}/> {entry.recovered} <span className="text-monospace" style={{color: Colors.GREEN4}}>({Math.round((entry.recovered/entry.infections)*100)}%)</span>
+            </TableCell>
         </TableRow>
     }
 
