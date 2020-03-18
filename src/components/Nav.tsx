@@ -1,9 +1,7 @@
-import React, {Component, EventHandler, MouseEventHandler} from "react";
+import React, {Component, MouseEventHandler} from "react";
 import {Button, Classes, H3, Navbar, NavbarDivider, NavbarGroup, NavbarHeading} from "@blueprintjs/core";
 import {Alignment} from "@blueprintjs/core/lib/esm/common/alignment";
-import {FontAwesomeIcon} from "@fortawesome/react-fontawesome";
-import {faMoon} from "@fortawesome/free-regular-svg-icons";
-import {faSun} from "@fortawesome/free-solid-svg-icons";
+import {Link} from "react-router-dom";
 
 interface NavProps {
     title: string;
@@ -17,12 +15,12 @@ export default class Nav extends Component<NavProps> {
             <NavbarGroup align={Alignment.LEFT}>
                 <NavbarHeading><H3>{this.props.title}</H3></NavbarHeading>
                 <NavbarDivider />
-                <Button className={Classes.MINIMAL} icon="home" text="Home" />
-                <Button className={Classes.MINIMAL} icon="map" text="Map" />
-                <Button className={Classes.MINIMAL} icon="timeline-area-chart" text="Projections" />
-                <Button className={Classes.MINIMAL} icon="book" text="Wiki" />
+                <Link to={"/"}><Button className={Classes.MINIMAL} icon="home" text="Home"/></Link>
+                <Link to={"/map"}><Button className={Classes.MINIMAL} icon="map" text="Map" /></Link>
+                <Link to={"/projections"}><Button className={Classes.MINIMAL} icon="timeline-area-chart" text="Projections" /></Link>
+                <Link to={"/wiki"}><Button className={Classes.MINIMAL} icon="book" text="Wiki" /></Link>
                 <NavbarDivider />
-                <Button className={Classes.MINIMAL} icon="info-sign" text="About" />
+                <Link to={"/about"}><Button className={Classes.MINIMAL} icon="info-sign" text="About" /></Link>
             </NavbarGroup>
             <NavbarGroup align={Alignment.RIGHT}>
                 <Button className={Classes.MINIMAL} onClick={this.props.toggleDarkMode} icon={"contrast"} />

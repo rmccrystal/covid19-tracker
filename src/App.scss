@@ -16,3 +16,7 @@ $transition-time: 150ms;
   transition: all $transition-time !important;
   transition: background-color $transition-time;
 }
+
+.app {
+  height: 100vh;
+}

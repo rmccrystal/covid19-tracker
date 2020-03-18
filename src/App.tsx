@@ -1,9 +1,9 @@
 import React, {Component} from 'react';
 import './App.scss';
-import InfectionTable from "./components/InfectionTable";
-import {GetInfections} from "./infections";
-import InfectionStats from "./components/InfectionStats";
 import Nav from "./components/Nav";
+import Home from "./views/Home";
+import {Route, BrowserRouter as Router} from "react-router-dom";
+import About from "./views/About";
 
 interface AppProps {
 
@@ -22,28 +22,21 @@ export default class App extends Component<AppProps, AppState> {
     }
 
     render() {
-      let themeClass = this.state.darkMode ? "bp3-dark" : "bp3-light";
-      return (
-          <div className={`App ${themeClass}`}>
-              <Nav title={"Covid 19 Tracker"} toggleDarkMode={this.toggleDarkMode.bind(this)} darkMode={this.state.darkMode}/>
-              <div className="container-fluid mt-4">
-                  <div className="row">
-                      <div className="col col-lg-3 mb-4">
-                          <InfectionStats entry={GetInfections()[0]} />
-                      </div>
-                      <div className="col col-lg-9">
-                          <InfectionTable entries={GetInfections()} region={"Global"}/>
-                          <InfectionTable entries={GetInfections()} region={"Global"}/>
-                          <InfectionTable entries={GetInfections()} region={"Global"}/>
-                          <InfectionTable entries={GetInfections()} region={"Global"}/>
-                      </div>
-                  </div>
-              </div>
-          </div>
-      );
-  }
+        let themeClass = this.state.darkMode ? "bp3-dark" : "bp3-light";
+        return (
+            <div className={`app ${themeClass}`}>
+                <Router>
+                    <Nav title={"Covid 19 Tracker"} toggleDarkMode={this.toggleDarkMode.bind(this)}
+                         darkMode={this.state.darkMode}/>
+                    <Route path={"/"} exact component={Home}/>
+                    <Route path={"/about"} component={About}/>
+                </Router>
+            </div>
+        );
+    }
 
-  toggleDarkMode(event: any) {
-      this.setState({darkMode: !this.state.darkMode});
-  }
+    toggleDarkMode(event: any) {
+        this.setState({darkMode: !this.state.darkMode});
+    }
 }
+
