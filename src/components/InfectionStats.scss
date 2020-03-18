@@ -7,14 +7,21 @@
 
 .statistic {
   font-size: 5rem;
-  margin: 0;
+  clear: both;
+  margin: 0 0 -0.5rem;
 }
 
 .statistic-container {
   text-align: center;
 }
 
+.statistic-info {
+  font-family: monospace;
+  margin-top: 0;
+}
+
 .statistic-label {
   font-family: monospace;
   text-align: center;
+  font-weight: bold;
 }
