@@ -1,4 +1,4 @@
-export class InfectionEntry {
+export default class InfectionEntry {
     region: string;
     infections: number;
     dead: number;
@@ -13,8 +13,12 @@ export class InfectionEntry {
         this.dead = dead;
         this.recovered = recovered;
     }
-}
 
-export function GetInfections(): InfectionEntry[] {
-    return [new InfectionEntry("United States", 100, 10, 50), new InfectionEntry("Europe", 1000, 42, 523)]
+    getDeathPercentage(): number {
+        return Math.round((this.dead/this.infections)*100)
+    }
+
+    getRecoveryPercentage(): number {
+        return Math.round((this.recovered/this.infections)*100)
+    }
 }

@@ -1,6 +1,6 @@
 import React, {Component} from 'react';
 import InfectionStats from "../components/InfectionStats";
-import {GetInfections} from "../infections";
+import {GetInfections} from "../data/data";
 import InfectionTable from "../components/InfectionTable";
 
 export default class Home extends Component {

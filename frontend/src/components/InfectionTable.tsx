@@ -1,5 +1,5 @@
 import React, {Component} from "react";
-import {InfectionEntry} from "../infections";
+import InfectionEntry from "../data/InfectionEntry";
 import {Table, TableBody, TableCell, TableHeader, TableHeaderCell, TableRow} from "semantic-ui-react";
 import {Card, Elevation, H2, InputGroup} from "@blueprintjs/core";
 import {FontAwesomeIcon} from "@fortawesome/react-fontawesome";
@@ -80,10 +80,10 @@ export default class InfectionTable extends Component<InfectionTableProps, Compo
                 <FontAwesomeIcon icon={Icons.faBed}/> {entry.active}
             </TableCell>
             <TableCell style={{color: Colors.RED1}}>
-                <FontAwesomeIcon icon={Icons.faSkull}/> {entry.dead} <span className="text-monospace" style={{color: Colors.RED4}}>({Math.round((entry.dead/entry.infections)*100)}%)</span>
+                <FontAwesomeIcon icon={Icons.faSkull}/> {entry.dead} <span className="text-monospace" style={{color: Colors.RED4}}>({entry.getDeathPercentage()}%)</span>
             </TableCell>
             <TableCell style={{color: Colors.GREEN1}}>
-                <FontAwesomeIcon icon={Icons.faHeartbeat}/> {entry.recovered} <span className="text-monospace" style={{color: Colors.GREEN4}}>({Math.round((entry.recovered/entry.infections)*100)}%)</span>
+                <FontAwesomeIcon icon={Icons.faHeartbeat}/> {entry.recovered} <span className="text-monospace" style={{color: Colors.GREEN4}}>({entry.getRecoveryPercentage()}%)</span>
             </TableCell>
         </TableRow>
     }

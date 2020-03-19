@@ -5,9 +5,7 @@ import Home from "./views/Home";
 import {Route, BrowserRouter as Router} from "react-router-dom";
 import About from "./views/About";
 
-interface AppProps {
-
-}
+interface AppProps {}
 
 interface AppState {
     darkMode: boolean
