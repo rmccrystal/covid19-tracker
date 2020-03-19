@@ -1,25 +1,19 @@
 {
   "compilerOptions": {
-    "target": "es5",
-    "lib": [
-      "dom",
-      "dom.iterable",
-      "esnext"
-    ],
-    "allowJs": true,
-    "skipLibCheck": true,
-    "esModuleInterop": true,
-    "allowSyntheticDefaultImports": true,
-    "strict": true,
-    "forceConsistentCasingInFileNames": true,
-    "module": "esnext",
+    "module": "commonjs",
+    "baseUrl": "./app",
+    "outDir": "build",
+    "target": "es6",
     "moduleResolution": "node",
-    "resolveJsonModule": true,
-    "isolatedModules": true,
-    "noEmit": true,
-    "jsx": "react"
+    "esModuleInterop": true,
+    "lib": ["es6"],
+    "allowJs": true,
+    "forceConsistentCasingInFileNames": true,
   },
   "include": [
-    "src"
+    "./app/**.ts"
+  ],
+  "exclude": [
+    "./frontend"
   ]
 }

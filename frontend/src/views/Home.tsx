@@ -9,7 +9,7 @@ export default class Home extends Component {
             <div className="container-fluid mt-4">
                 <div className="row">
                     <div className="col col-lg-3 mb-4">
-                        <InfectionStats entry={GetInfections()[0]}/>
+                        <InfectionStats entries={GetInfections()}/>
                     </div>
                     <div className="col col-lg-9">
                         <InfectionTable entries={GetInfections()} region={"Global"}/>
