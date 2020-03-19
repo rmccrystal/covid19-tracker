@@ -12,5 +12,6 @@ export function getInfectionsFromContinent(continent: Continent): InfectionEntry
 export function getContinents(): Continent[] {
     let continents: Continent[] = [];
     getAllInfections().forEach(value => {continents.push(value.continent)});
+    continents = continents.filter((value => {return value !== undefined}));    // Filter out undefined from our array
     return Array.from(new Set(continents));     // Remove duplicates
 }
