@@ -1,8 +1,8 @@
 import InfectionEntry, {Continent, sumInfectionEntries} from "./InfectionEntry";
+import {InfectionData} from "./backend";
 
 export function getAllInfections(): InfectionEntry[] {
-    return [new InfectionEntry("United States", 100, 10, 50, "North America"),
-        new InfectionEntry("France", 1000, 42, 523, "Europe")]
+    return InfectionData;
 }
 
 export function getGlobalInfections(): InfectionEntry {
