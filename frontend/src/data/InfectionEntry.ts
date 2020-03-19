@@ -1,4 +1,7 @@
+export type Continent = "North America" | "Europe" | "Asia" | "South America" | "Africa" | "Australia" | undefined;
+
 export default class InfectionEntry {
+    continent: Continent;
     region: string;
     infections: number;
     dead: number;
@@ -7,7 +10,8 @@ export default class InfectionEntry {
         return this.infections - this.recovered;
     }
 
-    constructor(region: string, infections: number, dead: number, recovered: number) {
+    constructor(region: string, infections: number, dead: number, recovered: number, continent?: Continent) {
+        this.continent = continent;
         this.region = region;
         this.infections = infections;
         this.dead = dead;
