@@ -1,3 +1,4 @@
-import InfectionEntry from "../../frontend/src/data/InfectionEntry";
+import InfectionEntry, {Continent} from "../../frontend/src/data/InfectionEntry";
 
-export default InfectionEntry;
+export {InfectionEntry} from "../../frontend/src/data/InfectionEntry";
+export {Continent} from "../../frontend/src/data/InfectionEntry";

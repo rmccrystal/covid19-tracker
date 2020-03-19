@@ -1,7 +1,7 @@
-export type Continent = "North America" | "Europe" | "Asia" | "South America" | "Africa" | "Australia" | undefined;
+export type Continent = "North America" | "Europe" | "Asia" | "South America" | "Africa" | "Australia";
 
 export default class InfectionEntry {
-    continent: Continent;
+    continent: Continent | undefined;
     region: string;
     infections: number;
     dead: number;
@@ -25,4 +25,15 @@ export default class InfectionEntry {
     getRecoveryPercentage(): number {
         return Math.round((this.recovered/this.infections)*100)
     }
+}
+
+// Sums the data from a list of infection entries.
+// Useful for finding global infections
+export function sumInfectionEntries(entries: InfectionEntry[]): InfectionEntry {
+    return entries.reduce((previousValue, currentValue) => {
+            return new InfectionEntry(previousValue.region,
+                previousValue.infections + currentValue.infections,
+                previousValue.dead + currentValue.dead,
+                previousValue.recovered + currentValue.recovered)},
+        new InfectionEntry("", 0, 0, 0));
 }

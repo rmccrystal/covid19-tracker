@@ -9,7 +9,7 @@ import "./InfectionTable.scss"
 
 interface InfectionTableProps {
     entries: InfectionEntry[]
-    region: string
+    title: string
 }
 
 interface ComponentState {
@@ -25,7 +25,7 @@ export default class InfectionTable extends Component<InfectionTableProps, Compo
         return <div className="container-fluid mb-4 col infection-table">
                 <Card elevation={Elevation.TWO}>
                 <H2 className="text-left">
-                    {this.props.region}
+                    {this.props.title}
                 </H2>
                 <Table celled unstackable selectable very compact striped>
                     <TableHeader>
@@ -62,7 +62,7 @@ export default class InfectionTable extends Component<InfectionTableProps, Compo
     getTableElements() {
         let entries = this.props.entries;
         if(this.state != null) {      // If we don't have an empty state, filter our array
-            entries = this.props.entries.filter(value => value.region.includes(this.state.filter));
+            entries = this.props.entries.filter(value => value.region.toLowerCase().includes(this.state.filter.toLowerCase()));
         }
         return entries.map(entry => {
             return this.renderEntry(entry);

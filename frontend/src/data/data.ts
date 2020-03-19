@@ -1,8 +1,14 @@
-import InfectionEntry, {Continent} from "./InfectionEntry";
+import InfectionEntry, {Continent, sumInfectionEntries} from "./InfectionEntry";
 
 export function getAllInfections(): InfectionEntry[] {
     return [new InfectionEntry("United States", 100, 10, 50, "North America"),
         new InfectionEntry("France", 1000, 42, 523, "Europe")]
+}
+
+export function getGlobalInfections(): InfectionEntry {
+    let entry = sumInfectionEntries(getAllInfections());
+    entry.region = "Global";
+    return entry;
 }
 
 export function getInfectionsFromContinent(continent: Continent): InfectionEntry[] {
@@ -11,7 +17,10 @@ export function getInfectionsFromContinent(continent: Continent): InfectionEntry
 
 export function getContinents(): Continent[] {
     let continents: Continent[] = [];
-    getAllInfections().forEach(value => {continents.push(value.continent)});
-    continents = continents.filter((value => {return value !== undefined}));    // Filter out undefined from our array
+    getAllInfections().forEach(value => {
+        if(value.continent) {
+            continents.push(value.continent);
+        }
+    });
     return Array.from(new Set(continents));     // Remove duplicates
 }

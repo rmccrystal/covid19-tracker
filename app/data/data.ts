@@ -1,4 +1,4 @@
-import InfectionEntry from "./InfectionEntry";
+import InfectionEntry, {Continent} from "./InfectionEntry";
 
 export interface IDataSource {
 
