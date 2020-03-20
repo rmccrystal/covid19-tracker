@@ -16,8 +16,8 @@ const infectionEntryRenderer: ItemRenderer<InfectionEntry> = (item, itemProps) =
     return (
         <MenuItem
             active={itemProps.modifiers.active}
-            key={item.region}
-            text={item.region}
+            key={item.country}
+            text={item.country}
             onClick={itemProps.handleClick}
         />
     );
@@ -47,10 +47,10 @@ export default class InfectionStats extends Component<InfectionStatsProps, Infec
                     itemRenderer={infectionEntryRenderer}
                     onItemSelect={this.setSelectedEntry.bind(this)}
                     itemPredicate={(query: string, item: InfectionEntry): boolean => {  // Search function
-                        return item.region.toLowerCase().includes(query.toLowerCase());
+                        return item.country.toLowerCase().includes(query.toLowerCase());
                     }}>
                     <Button rightIcon="double-caret-vertical" minimal={true}>
-                        <H1 style={{textDecoration: "underline"}}>{this.state.selectedEntry.region}</H1>
+                        <H1 style={{textDecoration: "underline"}}>{this.state.selectedEntry.country}</H1>
                     </Button>
                 </InfectionEntrySelect>
                 {this.renderEntry(this.state.selectedEntry)}

@@ -1,8 +1,9 @@
 export type Continent = "North America" | "Europe" | "Asia" | "South America" | "Africa" | "Australia";
 
 export default class InfectionEntry {
-    continent: Continent | undefined;
-    region: string;
+    continent?: Continent;
+    city?: string;
+    country: string;
     infections: number;
     dead: number;
     recovered: number;
@@ -10,9 +11,10 @@ export default class InfectionEntry {
         return this.infections - this.recovered;
     }
 
-    constructor(region: string, infections: number, dead: number, recovered: number, continent?: Continent) {
+    constructor(region: string, infections: number, dead: number, recovered: number, continent?: Continent, city?: string) {
         this.continent = continent;
-        this.region = region;
+        this.country = region;
+        this.city = city;
         this.infections = infections;
         this.dead = dead;
         this.recovered = recovered;
@@ -31,7 +33,7 @@ export default class InfectionEntry {
 // Useful for finding global infections
 export function sumInfectionEntries(entries: InfectionEntry[]): InfectionEntry {
     return entries.reduce((previousValue, currentValue) => {
-            return new InfectionEntry(previousValue.region,
+            return new InfectionEntry(previousValue.country,
                 previousValue.infections + currentValue.infections,
                 previousValue.dead + currentValue.dead,
                 previousValue.recovered + currentValue.recovered)},

@@ -62,7 +62,7 @@ export default class InfectionTable extends Component<InfectionTableProps, Compo
     getTableElements() {
         let entries = this.props.entries;
         if(this.state != null) {      // If we don't have an empty state, filter our array
-            entries = this.props.entries.filter(value => value.region.toLowerCase().includes(this.state.filter.toLowerCase()));
+            entries = this.props.entries.filter(value => value.country.toLowerCase().includes(this.state.filter.toLowerCase()));
         }
         return entries.map(entry => {
             return this.renderEntry(entry);
@@ -72,7 +72,7 @@ export default class InfectionTable extends Component<InfectionTableProps, Compo
     // Renders a single infection entry. If `header` is true, the entry will render as a header
     renderEntry(entry: InfectionEntry, header: boolean = false) {
         return <TableRow>
-            <TableCell>{entry.region}</TableCell>
+            <TableCell>{entry.country}</TableCell>
             <TableCell style={{color: Colors.INDIGO1}}>
                 <FontAwesomeIcon icon={Icons.faInfoCircle}/> {entry.infections}
             </TableCell>
