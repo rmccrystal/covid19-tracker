@@ -17,6 +17,6 @@ $transition-time: 150ms;
   transition: background-color $transition-time;
 }
 
-.app {
-  height: 100vh;
+body > #root > div {
+  min-height: 100vh;
 }

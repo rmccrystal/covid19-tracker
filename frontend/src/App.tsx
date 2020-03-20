@@ -8,8 +8,10 @@ import {Route, BrowserRouter as Router} from "react-router-dom";
 import About from "./views/About";
 import InfectionData, {getDataFromServer} from "./data/InfectionData";
 import LoadingScreen from "./components/LoadingScreen";
+import FadeIn from "react-fade-in";
 
-interface AppProps {}
+interface AppProps {
+}
 
 interface AppState {
     darkMode: boolean;
@@ -28,17 +30,21 @@ export default class App extends Component<AppProps, AppState> {
     }
 
     componentDidMount(): void {
-        getDataFromServer().then((data => {
-            setTimeout(() => {
-                this.setState({
-                    darkMode: this.state.darkMode,
-                    dataLoaded: true,
-                    data: data
-                })
-            }, 1000);
-        })).catch((reason => {
-            alert(reason);      // TODO: Change this
-        }))
+        getDataFromServer().then(data => {
+
+            this.setState({
+                darkMode: this.state.darkMode,
+                dataLoaded: true,
+                data: data
+            });
+        })
+        .catch(reason => {
+            this.setState({
+                darkMode: this.state.darkMode,
+                dataLoaded: true,
+                data: this.state.data
+            });
+        });
     }
 
     render() {
@@ -50,7 +56,12 @@ export default class App extends Component<AppProps, AppState> {
                          darkMode={this.state.darkMode}/>
                     <Route path={"/"} exact>
                         {
-                            this.state.dataLoaded ? <Home data={this.state.data} /> : <LoadingScreen text={"asdf"}/>
+                            this.state.dataLoaded ?
+                                <Home data={this.state.data}/>
+                                :
+                                <FadeIn>
+                                    <LoadingScreen text={"Fetching latest data..."}/>
+                                </FadeIn>
                         }
                     </Route>
                     <Route path={"/about"} component={About}/>
