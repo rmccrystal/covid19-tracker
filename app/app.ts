@@ -4,12 +4,12 @@ import cors from "cors"
 import {getLatestData} from "./data/rawData";
 import fs from "fs";
 
-/*
+
 getLatestData().then(data => {
-    console.log(JSON.stringify(data));
-    fs.writeFileSync("test", JSON.stringify(data));
+    console.log(data);
+    fs.writeFileSync("test", data);
 });
-*/
+
 
 const app = express();
 
