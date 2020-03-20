@@ -91,7 +91,7 @@ export async function getLatestData(): Promise<RegionRecord[]> {
 
         // If the state is defined and has a comma in it, set the city to what is before the comma
         if(state != undefined && state.split(',').length == 2) {
-            let split = state.split(',');
+            let split = state.split(' ,');
             city = split[0];        // The city is the first element of the split
             state = split[1];       // The state is the second element.
         }
