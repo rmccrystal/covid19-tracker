@@ -1,6 +1,11 @@
 import express from "express"
 import Api from "./api"
 import cors from "cors"
+import {getLatestData} from "./data/rawData";
+
+getLatestData().then(data => {
+    console.log(data);
+});
 
 const app = express();
 
