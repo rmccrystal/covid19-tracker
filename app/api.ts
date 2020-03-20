@@ -1,10 +1,10 @@
 import express from 'express';
-import {DataSource} from "./data/data";
+import {getInfectionData} from "./data/data";
 
 var router = express.Router();
 
-router.post('/getInfections', ((req, res) => {
-    res.json(DataSource.getInfections())
+router.post('/getInfectionData', ((req, res) => {
+    res.json(getInfectionData())
 }));
 
 export default router;

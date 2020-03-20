@@ -1,18 +1,22 @@
 import React, {Component} from 'react';
 import InfectionStats from "../components/InfectionStats";
-import {getAllInfections, getContinents, getGlobalInfections, getInfectionsFromContinent} from "../data/data";
+import InfectionData from "../data/InfectionData";
 import InfectionTable from "../components/InfectionTable";
 
-export default class Home extends Component {
+interface HomeProps {
+    data: InfectionData
+}
+
+export default class Home extends Component<HomeProps> {
     render() {
         return (
             <div className="container-fluid mt-4">
                 <div className="row">
                     <div className="col col-lg-3 mb-4">
-                        <InfectionStats entries={[getGlobalInfections()].concat(getAllInfections()) /* combine global and all infections */}/>
+                        <InfectionStats entries={[this.props.data.getGlobalInfections()].concat(this.props.data.getAllInfections()) /* combine global and all infections */}/>
                     </div>
                     <div className="col col-lg-9">
-                        <InfectionTable entries={getAllInfections()} title={"Global"}/>
+                        <InfectionTable entries={this.props.data.getAllInfections()} title={"Global"}/>
                         {this.getRegionalInfectionTables()}
                     </div>
                 </div>
@@ -22,8 +26,8 @@ export default class Home extends Component {
 
     getRegionalInfectionTables() {  // All the infection tables excluding global
         return <div>
-            {getContinents().map(continent => {
-                return <InfectionTable entries={getInfectionsFromContinent(continent)} title={continent} />
+            {this.props.data.getContinents().map(continent => {
+                return <InfectionTable entries={this.props.data.getInfectionsByContinent(continent)} title={continent} />
             })}
         </div>
     }

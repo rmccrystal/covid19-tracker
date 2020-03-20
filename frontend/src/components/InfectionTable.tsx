@@ -27,7 +27,7 @@ export default class InfectionTable extends Component<InfectionTableProps, Compo
                 <H2 className="text-left">
                     {this.props.title}
                 </H2>
-                <Table celled unstackable selectable very compact striped>
+                <Table celled unstackable selectable compact striped>
                     <TableHeader>
                         <TableRow>
                             <TableHeaderCell>

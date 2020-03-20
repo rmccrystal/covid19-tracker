@@ -1,4 +1,4 @@
-import React, {Component, SyntheticEvent} from "react";
+import React, {Component} from "react";
 import {Button, Card, Colors, Divider, H1, MenuItem} from "@blueprintjs/core";
 import {Elevation} from "@blueprintjs/core/lib/esm/common/elevation";
 import './InfectionStats.scss';
@@ -28,7 +28,7 @@ interface InfectionStatsProps {
 }
 
 interface InfectionStatsState {
-    selectedEntry: InfectionEntry
+    selectedEntry: InfectionEntry;
 }
 
 export default class InfectionStats extends Component<InfectionStatsProps, InfectionStatsState> {
@@ -45,7 +45,10 @@ export default class InfectionStats extends Component<InfectionStatsProps, Infec
                 <InfectionEntrySelect
                     items={this.props.entries}
                     itemRenderer={infectionEntryRenderer}
-                    onItemSelect={this.setSelectedEntry.bind(this)}>
+                    onItemSelect={this.setSelectedEntry.bind(this)}
+                    itemPredicate={(query: string, item: InfectionEntry): boolean => {  // Search function
+                        return item.region.toLowerCase().includes(query.toLowerCase());
+                    }}>
                     <Button rightIcon="double-caret-vertical" minimal={true}>
                         <H1 style={{textDecoration: "underline"}}>{this.state.selectedEntry.region}</H1>
                     </Button>

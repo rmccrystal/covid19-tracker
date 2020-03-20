@@ -1,14 +1,11 @@
-import InfectionEntry from "./InfectionEntry";
-import TestDataSource from "./sources/TestDataSource";
+import InfectionData from "./InfectionData";
+import InfectionEntry from "../../frontend/src/data/InfectionEntry";
 
-/*
- * The DataSource interface
- * This interface is an abstraction for any covid-19 data source
- * It contains a function which returns the list of all infection datad
- */
-export interface IDataSource {
-    getInfections: () => InfectionEntry[]
+export function getInfectionData(): InfectionData {
+    return new InfectionData([new InfectionEntry("United States", 21312, 2312, 142, "North America"),
+        new InfectionEntry("France", 12412, 152, 132, "Europe"),
+        new InfectionEntry("Germany", 123, 10, 12, "Europe"),
+        new InfectionEntry("Russia", 442, 4, 9, "Europe"),
+        new InfectionEntry("United Kingdom", 523, 32, 41, "Europe"),
+        new InfectionEntry("Poland", 11, 2, 0, "Europe")])
 }
-
-// DataSource is the current data source we are using
-export const DataSource: IDataSource = new TestDataSource();
