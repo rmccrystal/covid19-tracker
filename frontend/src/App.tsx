@@ -7,6 +7,7 @@ import Home from "./views/Home";
 import {Route, BrowserRouter as Router} from "react-router-dom";
 import About from "./views/About";
 import InfectionData, {getDataFromServer} from "./data/InfectionData";
+import LoadingScreen from "./components/LoadingScreen";
 
 interface AppProps {}
 
@@ -34,7 +35,7 @@ export default class App extends Component<AppProps, AppState> {
                     dataLoaded: true,
                     data: data
                 })
-            }, 0);
+            }, 1000);
         })).catch((reason => {
             alert(reason);      // TODO: Change this
         }))
@@ -49,7 +50,7 @@ export default class App extends Component<AppProps, AppState> {
                          darkMode={this.state.darkMode}/>
                     <Route path={"/"} exact>
                         {
-                            this.state.dataLoaded ? <Home data={this.state.data} /> : <p>loading</p>
+                            this.state.dataLoaded ? <Home data={this.state.data} /> : <LoadingScreen text={"asdf"}/>
                         }
                     </Route>
                     <Route path={"/about"} component={About}/>
