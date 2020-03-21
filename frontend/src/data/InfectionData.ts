@@ -43,12 +43,16 @@ export async function getDataFromServer(): Promise<InfectionData> {
         throw new Error("Could not connect to data API");
     }
 
+    if(resp.data['error']) {
+        throw new Error(resp.data['error'])
+    }
+
     // TODO: deserialize data without doing this
     // FIXME: If we change any of these types this will break!
     let entries: InfectionEntry[] = [];
 
-    resp.data.entries.forEach((item: InfectionEntry) => {
-        entries.push(Object.assign(new InfectionEntry("", 0, 0, 0), item))
+    resp.data.entries.forEach((item: any) => {
+        entries.push(new InfectionEntry(item.country, parseInt(item.infections), parseInt(item.dead), parseInt(item.recovered)))
     });
     return new InfectionData(entries);
 }

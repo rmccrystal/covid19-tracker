@@ -1,13 +1,13 @@
 import express from "express"
-import Api from "./api"
+import Api, {updateLatestData} from "./api"
 import cors from "cors"
 import {getLatestData} from "./data/rawData";
 import fs from "fs";
 
 
 getLatestData().then(data => {
-    console.log(data);
-    fs.writeFileSync("test", data);
+    console.log(data.getCountryEntries());
+    updateLatestData(data);
 });
 
 

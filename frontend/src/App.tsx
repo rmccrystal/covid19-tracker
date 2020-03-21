@@ -31,7 +31,6 @@ export default class App extends Component<AppProps, AppState> {
 
     componentDidMount(): void {
         getDataFromServer().then(data => {
-
             this.setState({
                 darkMode: this.state.darkMode,
                 dataLoaded: true,
@@ -39,11 +38,7 @@ export default class App extends Component<AppProps, AppState> {
             });
         })
         .catch(reason => {
-            this.setState({
-                darkMode: this.state.darkMode,
-                dataLoaded: true,
-                data: this.state.data
-            });
+            alert(reason);
         });
     }
 
