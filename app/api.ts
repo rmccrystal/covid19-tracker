@@ -1,12 +1,12 @@
 import express from 'express';
 import {getInfectionData} from "./data/data";
 import InfectionData from "../frontend/src/data/InfectionData";
-import {RawInfectionData} from "./data/rawData";
+import {HistoricalInfectionData} from "./data/historicalDataApi";
 
 var router = express.Router();
-var latestData: RawInfectionData | undefined = undefined;   // this will be updated with the latest data
+var latestData: HistoricalInfectionData | undefined = undefined;   // this will be updated with the latest data
 
-export function updateLatestData(data: RawInfectionData) {
+export function updateLatestData(data: HistoricalInfectionData) {
     latestData = data;
 }
 

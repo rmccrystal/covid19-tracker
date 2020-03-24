@@ -9,14 +9,3 @@ export function getInfectionData(): InfectionData {
         new InfectionEntry("United Kingdom", 523, 32, 41, "Europe"),
         new InfectionEntry("Poland", 11, 2, 0, "Europe")])
 }
-
-/*
- * Dow
- */
-function updateRepo() {
-
-}
-
-function cloneRepo() {
-
-}

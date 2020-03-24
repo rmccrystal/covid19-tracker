@@ -2,7 +2,7 @@ import axios from "axios";
 import parse from "csv-parse/lib/sync";
 import InfectionEntry from "../../frontend/src/data/InfectionEntry";
 
-export class RawInfectionData {
+export class HistoricalInfectionData {
     //lastUpdated: Date
     private records: RegionRecord[];
 
@@ -153,7 +153,7 @@ const RECOVERED_URL = "https://raw.githubusercontent.com/CSSEGISandData/COVID-19
  * Returns a list of RegionData entries gathered from
  * three files in https://github.com/CSSEGISandData/COVID-19/tree/master/csse_covid_19_data/csse_covid_19_time_series
  */
-export async function getLatestData(): Promise<RawInfectionData> {
+export async function getLatestData(): Promise<HistoricalInfectionData> {
     let [confirmedResp, deathsResp, recoveredResp] = await Promise.all([
         axios.get(CONFIRMED_URL),
         axios.get(DEATHS_URL),
@@ -226,7 +226,7 @@ export async function getLatestData(): Promise<RawInfectionData> {
         ))
     });
 
-    return new RawInfectionData(records);
+    return new HistoricalInfectionData(records);
 }
 
 function isDate(text: string): boolean {

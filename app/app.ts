@@ -1,15 +1,17 @@
 import express from "express"
 import Api, {updateLatestData} from "./api"
 import cors from "cors"
-import {getLatestData} from "./data/rawData";
-import fs from "fs";
+import {getLatestData} from "./data/historicalDataApi";
+import * as Covid19Api from "covid19-api";
+import {GetReportsResponse, Table} from "covid19-api";
 
 
-getLatestData().then(data => {
-    console.log(data.getCountryEntries());
-    updateLatestData(data);
+Covid19Api.default.getReports().then((res) => {
+    let resp: GetReportsResponse = res[0][0];
+    resp.table[0].forEach((value => {
+        console.log(value.Country, value.ActiveCases  )
+    }))
 });
-
 
 const app = express();
 

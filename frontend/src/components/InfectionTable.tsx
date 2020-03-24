@@ -64,7 +64,13 @@ export default class InfectionTable extends Component<InfectionTableProps, Compo
         if(this.state != null) {      // If we don't have an empty state, filter our array
             entries = this.props.entries.filter(value => value.country.toLowerCase().includes(this.state.filter.toLowerCase()));
         }
-        return entries.map(entry => {
+
+        let sortedEntries = entries.sort((a, b): number => {
+            if(a.infections > b.infections) { return -1 }
+            if(a.infections < b.infections) { return 1 }
+            else { return 0 }
+        });
+        return sortedEntries.map(entry => {
             return this.renderEntry(entry);
         })
     }
