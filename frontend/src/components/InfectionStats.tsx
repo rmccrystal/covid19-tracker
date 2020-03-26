@@ -2,7 +2,7 @@ import React, {Component} from "react";
 import {Button, Card, Colors, Divider, H1, MenuItem} from "@blueprintjs/core";
 import {Elevation} from "@blueprintjs/core/lib/esm/common/elevation";
 import './InfectionStats.scss';
-import InfectionEntry from "../data/InfectionEntry";
+import InfectionEntry from "../shared/InfectionEntry";
 import * as Icons from "@fortawesome/free-solid-svg-icons";
 import {FontAwesomeIcon} from "@fortawesome/react-fontawesome";
 import {ItemRenderer, Select} from "@blueprintjs/select";

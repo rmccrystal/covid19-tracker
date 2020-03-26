@@ -1,6 +1,6 @@
 import axios from "axios";
 import parse from "csv-parse/lib/sync";
-import InfectionEntry from "../../frontend/src/data/InfectionEntry";
+import InfectionEntry from "../../frontend/src/shared/InfectionEntry";
 
 export class HistoricalInfectionData {
     //lastUpdated: Date

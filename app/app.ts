@@ -1,19 +1,19 @@
 import express from "express"
 import Api, {updateLatestData} from "./api"
 import cors from "cors"
-import {getLatestData} from "./data/historicalDataApi";
-import * as Covid19Api from "covid19-api";
-import {GetReportsResponse, Table} from "covid19-api";
-
-
-Covid19Api.default.getReports().then((res) => {
-    let resp: GetReportsResponse = res[0][0];
-    resp.table[0].forEach((value => {
-        console.log(value.Country, value.ActiveCases  )
-    }))
-});
+import {getInfectionData} from "./data/data";
 
 const app = express();
+setInterval(() => {
+    getInfectionData().then(data => {
+        updateLatestData(data);
+    });
+}, 500000); // update every 500 seconds
+
+getInfectionData().then(data => {
+    updateLatestData(data);
+});
+
 
 app.use(cors());
 app.use(express.static('frontend/build'));

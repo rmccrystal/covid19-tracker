@@ -1,7 +1,7 @@
-export type Continent = "North America" | "Europe" | "Asia" | "South America" | "Africa" | "Australia";
+export type Category = string;
 
 export default class InfectionEntry {
-    continent?: Continent;
+    category?: Category;
     city?: string;
     state?: string;
     country: string;
@@ -12,8 +12,8 @@ export default class InfectionEntry {
         return this.infections - this.recovered;
     }
 
-    constructor(country: string, infections: number, dead: number, recovered: number, continent?: Continent, city?: string, state?: string) {
-        this.continent = continent;
+    constructor(country: string, infections: number, dead: number, recovered: number, category?: Category, city?: string, state?: string) {
+        this.category = category;
         this.country = country;
         this.state = state;
         this.city = city;
@@ -23,11 +23,11 @@ export default class InfectionEntry {
     }
 
     getDeathPercentage(): number {
-        return Math.round((this.dead/this.infections)*100)
+        return Math.round((this.dead/this.infections)*1000) / 10        // the / 10 and the * 1000 rounds the percentage to one decimal place
     }
 
     getRecoveryPercentage(): number {
-        return Math.round((this.recovered/this.infections)*100)
+        return Math.round((this.recovered/this.infections)*1000) / 10
     }
 }
 

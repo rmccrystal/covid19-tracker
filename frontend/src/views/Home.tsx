@@ -1,6 +1,6 @@
 import React, {Component} from 'react';
 import InfectionStats from "../components/InfectionStats";
-import InfectionData from "../data/InfectionData";
+import InfectionData from "../shared/InfectionData";
 import InfectionTable from "../components/InfectionTable";
 
 interface HomeProps {
@@ -26,8 +26,8 @@ export default class Home extends Component<HomeProps> {
 
     getRegionalInfectionTables() {  // All the infection tables excluding global
         return <div>
-            {this.props.data.getContinents().map(continent => {
-                return <InfectionTable entries={this.props.data.getInfectionsByContinent(continent)} title={continent} />
+            {this.props.data.getCategories().map(continent => {
+                return <InfectionTable entries={this.props.data.getInfectionsByCategory(continent)} title={continent} />
             })}
         </div>
     }

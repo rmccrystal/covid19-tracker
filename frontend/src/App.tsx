@@ -6,9 +6,10 @@ import Nav from "./components/Nav";
 import Home from "./views/Home";
 import {Route, BrowserRouter as Router} from "react-router-dom";
 import About from "./views/About";
-import InfectionData, {getDataFromServer} from "./data/InfectionData";
+import InfectionData from "./shared/InfectionData";
 import LoadingScreen from "./components/LoadingScreen";
 import FadeIn from "react-fade-in";
+import {getDataFromServer} from "./data/backend";
 
 interface AppProps {
 }

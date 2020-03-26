@@ -1,5 +1,5 @@
 import React, {Component} from "react";
-import InfectionEntry from "../data/InfectionEntry";
+import InfectionEntry from "../shared/InfectionEntry";
 import {Table, TableBody, TableCell, TableHeader, TableHeaderCell, TableRow} from "semantic-ui-react";
 import {Card, Elevation, H2, InputGroup} from "@blueprintjs/core";
 import {FontAwesomeIcon} from "@fortawesome/react-fontawesome";
