@@ -22,6 +22,23 @@ export default class InfectionEntry {
         this.recovered = recovered;
     }
 
+    // These string functions return the number with commas
+    infectionsString(): string {
+        return this.infections.toLocaleString();
+    }
+
+    deadString(): string {
+        return this.dead.toLocaleString();
+    }
+
+    recoveredString(): string {
+        return this.recovered.toLocaleString();
+    }
+
+    activeString(): string {
+        return this.active.toLocaleString();
+    }
+
     getDeathPercentage(): number {
         return Math.round((this.dead/this.infections)*1000) / 10        // the / 10 and the * 1000 rounds the percentage to one decimal place
     }

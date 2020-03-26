@@ -62,27 +62,27 @@ export default class InfectionStats extends Component<InfectionStatsProps, Infec
         return (<div>
             <div className="statistic-container">
                 <p className="statistic" style={{color: Colors.INDIGO3}}><FontAwesomeIcon
-                    icon={Icons.faInfoCircle}/> {entry.infections}</p>
+                    icon={Icons.faInfoCircle}/> {entry.infectionsString()}</p>
                 {/*<p className="statistic-info" style={{color: Colors.INDIGO3}}>{}% of {this.props.entry.region} population</p>*/}
                 <span className="statistic-label">total cases</span>
             </div>
             <Divider/>
             <div className="statistic-container">
                 <p className="statistic" style={{color: Colors.ORANGE3}}><FontAwesomeIcon
-                    icon={Icons.faBed}/> {entry.active}</p>
+                    icon={Icons.faBed}/> {entry.activeString()}</p>
                 {/*<p className="statistic-info" style={{color: Colors.ORANGE3}}>({Math.round((this.props.entry.active/this.props.entry.infections)*100)}% of total cases)</p>*/}
                 <span className="statistic-label">active cases</span>
             </div>
             <Divider/>
             <div className="statistic-container">
                 <p className="statistic" style={{color: Colors.RED3}}><FontAwesomeIcon
-                    icon={Icons.faSkull}/> {entry.dead}</p>
+                    icon={Icons.faSkull}/> {entry.deadString()}</p>
                 <span className="statistic-label">total deaths</span>
             </div>
             <Divider/>
             <div className="statistic-container">
                 <p className="statistic" style={{color: Colors.GREEN3}}><FontAwesomeIcon
-                    icon={Icons.faHeartbeat}/> {entry.recovered}</p>
+                    icon={Icons.faHeartbeat}/> {entry.recoveredString()}</p>
                 <span className="statistic-label">total recoveries</span>
             </div>
         </div>)

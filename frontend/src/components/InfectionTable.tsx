@@ -80,16 +80,16 @@ export default class InfectionTable extends Component<InfectionTableProps, Compo
         return <TableRow>
             <TableCell>{entry.country}</TableCell>
             <TableCell style={{color: Colors.INDIGO1}}>
-                <FontAwesomeIcon icon={Icons.faInfoCircle}/> {entry.infections}
+                <FontAwesomeIcon icon={Icons.faInfoCircle}/> {entry.infectionsString()}
             </TableCell>
             <TableCell style={{color: Colors.ORANGE1}}>
-                <FontAwesomeIcon icon={Icons.faBed}/> {entry.active}
+                <FontAwesomeIcon icon={Icons.faBed}/> {entry.activeString()}
             </TableCell>
             <TableCell style={{color: Colors.RED1}}>
-                <FontAwesomeIcon icon={Icons.faSkull}/> {entry.dead} <span className="text-monospace" style={{color: Colors.RED4}}>({entry.getDeathPercentage()}%)</span>
+                <FontAwesomeIcon icon={Icons.faSkull}/> {entry.deadString()} <span className="text-monospace" style={{color: Colors.RED4}}>({entry.getDeathPercentage()}%)</span>
             </TableCell>
             <TableCell style={{color: Colors.GREEN1}}>
-                <FontAwesomeIcon icon={Icons.faHeartbeat}/> {entry.recovered} <span className="text-monospace" style={{color: Colors.GREEN4}}>({entry.getRecoveryPercentage()}%)</span>
+                <FontAwesomeIcon icon={Icons.faHeartbeat}/> {entry.recoveredString()} <span className="text-monospace" style={{color: Colors.GREEN4}}>({entry.getRecoveryPercentage()}%)</span>
             </TableCell>
         </TableRow>
     }
