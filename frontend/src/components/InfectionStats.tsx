@@ -39,6 +39,18 @@ export default class InfectionStats extends Component<InfectionStatsProps, Infec
         }
     }
 
+    componentDidMount(): void {
+        this.updatePageTitle()
+    }
+
+    componentDidUpdate(): void {
+        this.updatePageTitle()
+    }
+
+    updatePageTitle() {
+        document.title = `Covid19 Tracker » ${this.state.selectedEntry.infectionsString()} (${this.state.selectedEntry.region})`
+    }
+
     render() {
         return (
             <Card elevation={Elevation.TWO} className="infection-card text-center" interactive style={{width: "100%"}}>
