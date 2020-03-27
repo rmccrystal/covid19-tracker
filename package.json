@@ -4,8 +4,8 @@
   "description": "Backend for covid19-tracker",
   "main": "index.js",
   "scripts": {
-    "start": "npx ts-node app/app.ts",
-    "build": "npx tsc",
+    "start": "ts-node app/app.ts",
+    "build": "tsc",
     "build-frontend": "cd frontend && npm run build"
   },
   "author": "",
@@ -21,6 +21,8 @@
     "csv-parse": "^4.8.8",
     "eslint": "^6.8.0",
     "express": "^4.17.1",
+    "ts-node": "^8.8.1",
+    "tsc": "^1.20150623.0",
     "typescript": "^3.8.3"
   }
 }
