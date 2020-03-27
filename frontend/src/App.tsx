@@ -10,6 +10,7 @@ import InfectionData from "./shared/InfectionData";
 import LoadingScreen from "./components/LoadingScreen";
 import FadeIn from "react-fade-in";
 import {getDataFromServer} from "./data/backend";
+import InfectionEntry from "./shared/InfectionEntry";
 
 interface AppProps {
 }
@@ -25,8 +26,13 @@ export default class App extends Component<AppProps, AppState> {
         super(props);
         this.state = {
             darkMode: false,
-            dataLoaded: false,
-            data: new InfectionData([]),
+            dataLoaded: true,
+            data: new InfectionData([
+                new InfectionEntry("United States", 100, 10, 50),
+                new InfectionEntry("France", 1000, 42, 77),
+                new InfectionEntry("asdf", 532, 12, 76),
+                new InfectionEntry("eqrqw", 12312, 3, 5675)
+            ]),
         }
     }
 
