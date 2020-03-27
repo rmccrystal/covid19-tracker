@@ -40,7 +40,7 @@ export default class InfectionStats extends Component<InfectionStatsProps, Infec
     }
 
     render() {
-        return <div className="container-fluid">
+        return (
             <Card elevation={Elevation.TWO} className="infection-card text-center" interactive style={{width: "100%"}}>
                 <InfectionEntrySelect
                     items={this.props.entries}
@@ -55,7 +55,7 @@ export default class InfectionStats extends Component<InfectionStatsProps, Infec
                 </InfectionEntrySelect>
                 {this.renderEntry(this.state.selectedEntry)}
             </Card>
-        </div>
+        )
     }
 
     renderEntry(entry: InfectionEntry) {
