@@ -10,13 +10,20 @@ export default class InfectionData {
         this.entries = entries;
     }
 
+    // Gets all of the infections with no specific region assocaited with it
+    getInfections(): InfectionEntry[] {
+        return this.entries.filter((entry) => {
+            return entry.category == undefined
+        })
+    }
+
     getAllInfections(): InfectionEntry[] {
         return this.entries
     }
 
     getGlobalInfections(): InfectionEntry {
-        let entry = sumInfectionEntries(this.getAllInfections());
-        entry.country = "Global";
+        let entry = sumInfectionEntries(this.getInfections());
+        entry.region = "Global";
         return entry;
     }
 
@@ -25,13 +32,13 @@ export default class InfectionData {
     }
 
     getCategories(): Category[] {
-        let continents: Category[] = [];
+        let categories: Category[] = [];
         this.getAllInfections().forEach(value => {
             if(value.category) {
-                continents.push(value.category);
+                categories.push(value.category);
             }
         });
-        return Array.from(new Set(continents));     // Remove duplicates
+        return Array.from(new Set(categories));     // Remove duplicates
     }
 
     static fromJson(json: any): InfectionData {
@@ -42,7 +49,7 @@ export default class InfectionData {
         let entries: InfectionEntry[] = [];
 
         json['entries'].forEach((item: any) => {
-            entries.push(new InfectionEntry(item.country, parseInt(item.infections), parseInt(item.dead), parseInt(item.recovered)))
+            entries.push(new InfectionEntry(item.region, parseInt(item.infections), parseInt(item.dead), parseInt(item.recovered), item.category))
         });
         return new InfectionData(entries);
     }

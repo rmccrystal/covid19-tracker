@@ -1,10 +1,8 @@
 export type Category = string;
 
 export default class InfectionEntry {
-    category?: Category;
-    city?: string;
-    state?: string;
-    country: string;
+    category?: Category | undefined;
+    region: string;
     infections: number;
     dead: number;
     recovered: number;
@@ -12,11 +10,9 @@ export default class InfectionEntry {
         return this.infections - this.recovered;
     }
 
-    constructor(country: string, infections: number, dead: number, recovered: number, category?: Category, city?: string, state?: string) {
+    constructor(region: string, infections: number, dead: number, recovered: number, category?: Category) {
         this.category = category;
-        this.country = country;
-        this.state = state;
-        this.city = city;
+        this.region = region;
         this.infections = infections;
         this.dead = dead;
         this.recovered = recovered;
@@ -52,9 +48,10 @@ export default class InfectionEntry {
 // Useful for finding global infections
 export function sumInfectionEntries(entries: InfectionEntry[]): InfectionEntry {
     return entries.reduce((previousValue, currentValue) => {
-            return new InfectionEntry(previousValue.country,
+            return new InfectionEntry(previousValue.region,
                 previousValue.infections + currentValue.infections,
                 previousValue.dead + currentValue.dead,
-                previousValue.recovered + currentValue.recovered)},
+                previousValue.recovered + currentValue.recovered,
+                previousValue.category)},
         new InfectionEntry("", 0, 0, 0));
 }

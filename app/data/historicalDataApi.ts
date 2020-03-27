@@ -56,13 +56,13 @@ export class HistoricalInfectionData {
             }
 
             // If we don't already have something in the array for this country
-            if(countryEntries.get(entry.country) === undefined) {
-                countryEntries.set(entry.country, [entry])
+            if(countryEntries.get(entry.region) === undefined) {
+                countryEntries.set(entry.region, [entry])
             } else {
                 // Else, append the entry to the map
                 countryEntries.set(
-                    entry.country,
-                    countryEntries.get(entry.country).concat([entry])
+                    entry.region,
+                    countryEntries.get(entry.region).concat([entry])
                 )
             }
         });

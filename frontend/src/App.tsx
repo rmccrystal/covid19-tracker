@@ -26,31 +26,8 @@ export default class App extends Component<AppProps, AppState> {
         super(props);
         this.state = {
             darkMode: true,
-            dataLoaded: true,
-            data: new InfectionData([
-                new InfectionEntry("United States", 100, 10, 50),
-                new InfectionEntry("France", 1000, 42, 77),
-                new InfectionEntry("asddf", 532, 12, 76),
-                new InfectionEntry("asdasdf", 532, 12, 76),
-                new InfectionEntry("q", 532, 12, 76),
-                new InfectionEntry("dabasdf", 532, 12, 76),
-                new InfectionEntry("asdadf", 532, 12, 76),
-                new InfectionEntry("adsdf", 532, 12, 76),
-                new InfectionEntry("aeqqsdf", 532, 12, 76),
-                new InfectionEntry("asedf", 532, 12, 76),
-                new InfectionEntry("aseeeedf", 532, 12, 76),
-                new InfectionEntry("asqedf", 532, 12, 76),
-                new InfectionEntry("azzsdf", 532, 12, 76),
-                new InfectionEntry("asdxf", 532, 12, 76),
-                new InfectionEntry("ascdf", 532, 12, 76),
-                new InfectionEntry("asvdf", 532, 12, 76),
-                new InfectionEntry("asbdf", 532, 12, 76),
-                new InfectionEntry("asndf", 532, 12, 76),
-                new InfectionEntry("asdmf", 532, 12, 76),
-                new InfectionEntry("ajsdf", 532, 12, 76),
-                new InfectionEntry("asdrwf", 532, 12, 76),
-                new InfectionEntry("tre", 12312, 3, 5675)
-            ]),
+            dataLoaded: false,
+            data: new InfectionData([])
         }
     }
 

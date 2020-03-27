@@ -40,7 +40,7 @@ const InfectionTableComponent = (props: InfectionTableComponentProps) => {
     const columns = React.useMemo(() => [
         {
             Header: "Region",
-            accessor: "country",
+            accessor: "region",
         },
         {
             Header: "Infections",
@@ -93,8 +93,7 @@ const InfectionTableComponent = (props: InfectionTableComponentProps) => {
                     return (
                         <tr {...row.getRowProps()}>
                             {row.cells.map(cell => {
-                                console.log(cell);
-                                return <td {...cell.getCellProps()}>{cell.render('Cell')}</td>
+                                return <td {...cell.getCellProps()}>{isNaN(cell.value) ? cell.value : cell.value.toLocaleString()}</td>
                             })}
                         </tr>
                     )
