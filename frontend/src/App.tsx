@@ -11,6 +11,7 @@ import LoadingScreen from "./components/LoadingScreen";
 import FadeIn from "react-fade-in";
 import {getDataFromServer} from "./data/backend";
 import InfectionEntry from "./shared/InfectionEntry";
+import Wiki from "./views/Wiki";
 
 interface AppProps {
 }
@@ -62,6 +63,7 @@ export default class App extends Component<AppProps, AppState> {
                         }
                     </Route>
                     <Route path={"/about"} component={About}/>
+                    <Route path={"/wiki"} component={Wiki}/>
                 </Router>
             </div>
         );
