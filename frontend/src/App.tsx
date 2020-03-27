@@ -6,9 +6,11 @@ import Nav from "./components/Nav";
 import Home from "./views/Home";
 import {Route, BrowserRouter as Router} from "react-router-dom";
 import About from "./views/About";
-import InfectionData, {getDataFromServer} from "./data/InfectionData";
+import InfectionData from "./shared/InfectionData";
 import LoadingScreen from "./components/LoadingScreen";
 import FadeIn from "react-fade-in";
+import {getDataFromServer} from "./data/backend";
+import InfectionEntry from "./shared/InfectionEntry";
 
 interface AppProps {
 }
@@ -23,15 +25,14 @@ export default class App extends Component<AppProps, AppState> {
     constructor(props: Readonly<AppProps>) {
         super(props);
         this.state = {
-            darkMode: false,
+            darkMode: true,
             dataLoaded: false,
-            data: new InfectionData([]),
+            data: new InfectionData([])
         }
     }
 
     componentDidMount(): void {
         getDataFromServer().then(data => {
-
             this.setState({
                 darkMode: this.state.darkMode,
                 dataLoaded: true,
@@ -39,11 +40,7 @@ export default class App extends Component<AppProps, AppState> {
             });
         })
         .catch(reason => {
-            this.setState({
-                darkMode: this.state.darkMode,
-                dataLoaded: true,
-                data: this.state.data
-            });
+            alert(reason);
         });
     }
 

@@ -2,7 +2,7 @@ import React, {Component} from "react";
 import {Button, Card, Colors, Divider, H1, MenuItem} from "@blueprintjs/core";
 import {Elevation} from "@blueprintjs/core/lib/esm/common/elevation";
 import './InfectionStats.scss';
-import InfectionEntry from "../data/InfectionEntry";
+import InfectionEntry from "../shared/InfectionEntry";
 import * as Icons from "@fortawesome/free-solid-svg-icons";
 import {FontAwesomeIcon} from "@fortawesome/react-fontawesome";
 import {ItemRenderer, Select} from "@blueprintjs/select";
@@ -16,8 +16,8 @@ const infectionEntryRenderer: ItemRenderer<InfectionEntry> = (item, itemProps) =
     return (
         <MenuItem
             active={itemProps.modifiers.active}
-            key={item.country}
-            text={item.country}
+            key={item.region}
+            text={item.region}
             onClick={itemProps.handleClick}
         />
     );
@@ -47,10 +47,10 @@ export default class InfectionStats extends Component<InfectionStatsProps, Infec
                     itemRenderer={infectionEntryRenderer}
                     onItemSelect={this.setSelectedEntry.bind(this)}
                     itemPredicate={(query: string, item: InfectionEntry): boolean => {  // Search function
-                        return item.country.toLowerCase().includes(query.toLowerCase());
+                        return item.region.toLowerCase().includes(query.toLowerCase());
                     }}>
                     <Button rightIcon="double-caret-vertical" minimal={true}>
-                        <H1 style={{textDecoration: "underline"}}>{this.state.selectedEntry.country}</H1>
+                        <H1 style={{textDecoration: "underline"}}>{this.state.selectedEntry.region}</H1>
                     </Button>
                 </InfectionEntrySelect>
                 {this.renderEntry(this.state.selectedEntry)}
@@ -62,27 +62,27 @@ export default class InfectionStats extends Component<InfectionStatsProps, Infec
         return (<div>
             <div className="statistic-container">
                 <p className="statistic" style={{color: Colors.INDIGO3}}><FontAwesomeIcon
-                    icon={Icons.faInfoCircle}/> {entry.infections}</p>
+                    icon={Icons.faInfoCircle}/> {entry.infectionsString()}</p>
                 {/*<p className="statistic-info" style={{color: Colors.INDIGO3}}>{}% of {this.props.entry.region} population</p>*/}
                 <span className="statistic-label">total cases</span>
             </div>
             <Divider/>
             <div className="statistic-container">
                 <p className="statistic" style={{color: Colors.ORANGE3}}><FontAwesomeIcon
-                    icon={Icons.faBed}/> {entry.active}</p>
+                    icon={Icons.faBed}/> {entry.activeString()}</p>
                 {/*<p className="statistic-info" style={{color: Colors.ORANGE3}}>({Math.round((this.props.entry.active/this.props.entry.infections)*100)}% of total cases)</p>*/}
                 <span className="statistic-label">active cases</span>
             </div>
             <Divider/>
             <div className="statistic-container">
                 <p className="statistic" style={{color: Colors.RED3}}><FontAwesomeIcon
-                    icon={Icons.faSkull}/> {entry.dead}</p>
+                    icon={Icons.faSkull}/> {entry.deadString()}</p>
                 <span className="statistic-label">total deaths</span>
             </div>
             <Divider/>
             <div className="statistic-container">
                 <p className="statistic" style={{color: Colors.GREEN3}}><FontAwesomeIcon
-                    icon={Icons.faHeartbeat}/> {entry.recovered}</p>
+                    icon={Icons.faHeartbeat}/> {entry.recoveredString()}</p>
                 <span className="statistic-label">total recoveries</span>
             </div>
         </div>)

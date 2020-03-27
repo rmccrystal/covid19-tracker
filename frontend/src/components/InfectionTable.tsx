@@ -1,11 +1,8 @@
 import React, {Component} from "react";
-import InfectionEntry from "../data/InfectionEntry";
-import {Table, TableBody, TableCell, TableHeader, TableHeaderCell, TableRow} from "semantic-ui-react";
-import {Card, Elevation, H2, InputGroup} from "@blueprintjs/core";
-import {FontAwesomeIcon} from "@fortawesome/react-fontawesome";
-import * as Icons from '@fortawesome/free-solid-svg-icons';
-import { Colors } from "@blueprintjs/core";
+import InfectionEntry from "../shared/InfectionEntry";
+import {Card, Elevation, H2, HTMLTable, Icon, InputGroup} from "@blueprintjs/core";
 import "./InfectionTable.scss"
+import {useTable, useSortBy, TableState} from "react-table";
 
 interface InfectionTableProps {
     entries: InfectionEntry[]
@@ -22,80 +19,87 @@ export default class InfectionTable extends Component<InfectionTableProps, Compo
     }
 
     render() {  // TODO: Add sorting
-        return <div className="container-fluid mb-4 col infection-table">
+        return (
+            <div className="container-fluid mb-4 col infection-table">
                 <Card elevation={Elevation.TWO}>
-                <H2 className="text-left">
-                    {this.props.title}
-                </H2>
-                <Table celled unstackable selectable compact striped>
-                    <TableHeader>
-                        <TableRow>
-                            <TableHeaderCell>
-                                <span style={{display: "flex"}}>
-                                    <InputGroup
-                                        style={{marginTop: 0, marginBottom: 0}}
-                                        fill={true}
-                                        leftIcon={"filter"}
-                                        small={true}
-                                        placeholder="Filter region..."
-                                        onChange={(event: any) => {
-                                            this.setState({filter: event.target.value})
-                                        }}
-                                    />
+                    <H2 className="text-left">
+                        {this.props.title}
+                    </H2>
+                    <InfectionTableComponent entries={this.props.entries}/>
+                </Card>
+            </div>)
+    }
+}
+
+interface InfectionTableComponentProps {
+    entries: InfectionEntry[]
+}
+
+const InfectionTableComponent = (props: InfectionTableComponentProps) => {
+    const data = React.useMemo(() => props.entries, []);
+    const columns = React.useMemo(() => [
+        {
+            Header: "Region",
+            accessor: "region",
+        },
+        {
+            Header: "Infections",
+            accessor: "infections",
+            sortDescFirst: true
+        },
+        {
+            Header: "Deaths",
+            accessor: "dead",
+            sortDescFirst: true
+        },
+        {
+            Header: "Recovered",
+            accessor: "recovered",
+            sortDescFirst: true
+        }], []);
+
+    const sorted = [{id: "infections", desc: true}];
+
+    const {
+        getTableProps,
+        getTableBodyProps,
+        headerGroups,
+        rows,
+        prepareRow,
+    } = useTable({columns, data}, useSortBy);
+
+    return (
+        <Card className="infection-table-card">
+            <HTMLTable {...getTableProps()} condensed striped interactive small bordered className="infection-table">
+                <thead className="infection-table-thead">
+                {headerGroups.map(headerGroup => (
+                    <tr {...headerGroup.getHeaderGroupProps()}>
+                        {headerGroup.headers.map((column: any) => (
+                            <th {...column.getHeaderProps(column.getSortByToggleProps())}>
+                                {column.render('Header')}
+                                <span style={{float: "right"}}>
+                                    {
+                                        column.canSort ? column.isSorted ? (column.isSortedDesc ? <Icon icon="chevron-down" /> : <Icon icon="chevron-up" />) : <Icon icon="expand-all" /> : {}
+                                    }
                                 </span>
-                            </TableHeaderCell>
-                            <TableHeaderCell>Infections</TableHeaderCell>
-                            <TableHeaderCell>Active Cases</TableHeaderCell>
-                            <TableHeaderCell>Deaths</TableHeaderCell>
-                            <TableHeaderCell>Recoveries</TableHeaderCell>
-                        </TableRow>
-                        {this.renderEntry(this.getTotal())}
-                    </TableHeader>
-                    <TableBody>
-                        {this.getTableElements()}
-                    </TableBody>
-                </Table>
-            </Card>
-        </div>
-    }
-
-    getTableElements() {
-        let entries = this.props.entries;
-        if(this.state != null) {      // If we don't have an empty state, filter our array
-            entries = this.props.entries.filter(value => value.country.toLowerCase().includes(this.state.filter.toLowerCase()));
-        }
-        return entries.map(entry => {
-            return this.renderEntry(entry);
-        })
-    }
-
-    // Renders a single infection entry. If `header` is true, the entry will render as a header
-    renderEntry(entry: InfectionEntry, header: boolean = false) {
-        return <TableRow>
-            <TableCell>{entry.country}</TableCell>
-            <TableCell style={{color: Colors.INDIGO1}}>
-                <FontAwesomeIcon icon={Icons.faInfoCircle}/> {entry.infections}
-            </TableCell>
-            <TableCell style={{color: Colors.ORANGE1}}>
-                <FontAwesomeIcon icon={Icons.faBed}/> {entry.active}
-            </TableCell>
-            <TableCell style={{color: Colors.RED1}}>
-                <FontAwesomeIcon icon={Icons.faSkull}/> {entry.dead} <span className="text-monospace" style={{color: Colors.RED4}}>({entry.getDeathPercentage()}%)</span>
-            </TableCell>
-            <TableCell style={{color: Colors.GREEN1}}>
-                <FontAwesomeIcon icon={Icons.faHeartbeat}/> {entry.recovered} <span className="text-monospace" style={{color: Colors.GREEN4}}>({entry.getRecoveryPercentage()}%)</span>
-            </TableCell>
-        </TableRow>
-    }
-
-    getTotal(): InfectionEntry {
-        let region = "Total";
-        let entries = this.props.entries;
-        return entries.reduce((previousValue, currentValue) => {
-            return new InfectionEntry(region,
-                previousValue.infections + currentValue.infections,
-                previousValue.dead + currentValue.dead,
-                previousValue.recovered + currentValue.recovered)},
-        new InfectionEntry(region, 0, 0, 0));
-    }
+                            </th>
+                        ))}
+                    </tr>
+                ))}
+                </thead>
+                <tbody {...getTableBodyProps()} className="infection-table-content">
+                {rows.map(row => {
+                    prepareRow(row)
+                    return (
+                        <tr {...row.getRowProps()}>
+                            {row.cells.map(cell => {
+                                return <td {...cell.getCellProps()}>{isNaN(cell.value) ? cell.value : cell.value.toLocaleString()}</td>
+                            })}
+                        </tr>
+                    )
+                })}
+                </tbody>
+            </HTMLTable>
+        </Card>
+    )
 }

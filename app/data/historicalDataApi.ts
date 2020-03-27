@@ -1,5 +1,92 @@
 import axios from "axios";
 import parse from "csv-parse/lib/sync";
+import InfectionEntry from "../../frontend/src/shared/InfectionEntry";
+
+export class HistoricalInfectionData {
+    //lastUpdated: Date
+    private records: RegionRecord[];
+
+    constructor(records: RegionRecord[]) {
+        this.records = records;
+    }
+
+    /*
+     * The next three functions: getAllEntries, getStateEntries and getCountryEntries
+     * essentially give the depth of the data request. getAllEntries gets all of the data,
+     * getStateEntries gets all of the data excluding cities, and getCountryEntries gets
+     * the data excluding both states and cities
+     */
+
+    // Gets all of the latest region records
+    getAllEntries(): InfectionEntry[] {
+        var entries: InfectionEntry[] = [];
+        this.records.forEach(record => {
+            entries.push(record.getLatestEntry())
+        });
+
+        return entries;
+    }
+
+    // Gets every region record except city level records
+    // We won't be displaying city level data as of now
+    // TODO: Implement city level data
+    getStateEntries(): InfectionEntry[] {
+        return this.getAllEntries().filter(entry => {
+            return entry.city === undefined;        // Return all of the entries where city is undefined
+        })
+    }
+
+    getCountryEntries(): InfectionEntry[] {
+        var entries: InfectionEntry[] = [];
+
+        // countryEntries is a map of countries and associated entries from every state
+        // We need to sum the entries for every state to get the country level data.
+        var countryEntries: Map<string, Array<InfectionEntry>> = new Map<string, Array<InfectionEntry>>();
+
+        /*
+         * If there is no state associated with the entry, we can safely assume
+         * that the country accounts for the entire country.
+         * If there is a state associated with the entry, sum all
+         * of the entries from that state
+         */
+        this.getStateEntries().forEach(entry => {
+            if(entry.state === undefined) {
+                entries.push(entry);
+                return
+            }
+
+            // If we don't already have something in the array for this country
+            if(countryEntries.get(entry.region) === undefined) {
+                countryEntries.set(entry.region, [entry])
+            } else {
+                // Else, append the entry to the map
+                countryEntries.set(
+                    entry.region,
+                    countryEntries.get(entry.region).concat([entry])
+                )
+            }
+        });
+
+        // Sum every entry for countryEntries and add the final result to entries
+
+        // Iterate through every country
+        for(let country of countryEntries.keys()) {
+            // Make a new variable that we can add new infections to
+            let newInfectionEntry: InfectionEntry = new InfectionEntry(country, 0, 0, 0);
+            countryEntries.get(country).forEach((entry) => {
+                // Loop over every infection entry for country `country`
+                // Add the data from the state level entry to the newInfectionEntry
+                newInfectionEntry.infections += entry.infections;
+                newInfectionEntry.dead += entry.dead;
+                newInfectionEntry.recovered += entry.recovered;
+            });
+
+            entries.push(newInfectionEntry);
+        }
+
+        return entries
+    }
+}
 
 /*
  * Raw data for a specific region
@@ -22,15 +109,39 @@ export class RegionRecord {
     deaths: Map<Date, number>;      // Same thing here but for deaths
     recoveries: Map<Date, number>;  //
 
-    constructor(city: string | undefined, state: string | undefined, country: string, lat: number, long: number, confirmed: Map<Date, number>, deaths: Map<Date, number>, recoveries: Map<Date, number>) {
-        this.city = city;
-        this.state = state;
+    latestDate: Date;       // The latest date containing data. Used to get the latest statistics
+
+    constructor(city: string | undefined, state: string | undefined, country: string, lat: number, long: number, confirmed: Map<Date, number>, deaths: Map<Date, number>, recoveries: Map<Date, number>, latestDate: Date) {
+        this.city = city == '' ? undefined : city;      // If there is no string for city set it to undefined
+        this.state = state == '' ? undefined : state;   // same thing here
         this.country = country;
         this.lat = lat;
         this.long = long;
         this.confirmed = confirmed;
         this.deaths = deaths;
         this.recoveries = recoveries;
+        this.latestDate = latestDate;
+    }
+
+    getEntryByDate(date: Date): InfectionEntry {
+        if(this.confirmed.get(date) === undefined) {
+            throw new Error("no entries for that date");
+        }
+
+        return new InfectionEntry(
+            this.country,
+            this.confirmed.get(date),
+            this.deaths.get(date),
+            this.recoveries.get(date),
+            undefined,
+            this.city,
+            this.state
+        )
+    }
+
+    // Gets the most recent infection entry
+    getLatestEntry(): InfectionEntry {
+        return this.getEntryByDate(this.latestDate);
     }
 }
 
@@ -42,7 +153,7 @@ const RECOVERED_URL = "https://raw.githubusercontent.com/CSSEGISandData/COVID-19
  * Returns a list of RegionData entries gathered from
  * three files in https://github.com/CSSEGISandData/COVID-19/tree/master/csse_covid_19_data/csse_covid_19_time_series
  */
-export async function getLatestData(): Promise<RegionRecord[]> {
+export async function getLatestData(): Promise<HistoricalInfectionData> {
     let [confirmedResp, deathsResp, recoveredResp] = await Promise.all([
         axios.get(CONFIRMED_URL),
         axios.get(DEATHS_URL),
@@ -78,12 +189,18 @@ export async function getLatestData(): Promise<RegionRecord[]> {
         let deaths: Map<Date, number> = new Map();
         let recovered: Map<Date, number> = new Map();
 
+        // This variable will contain the latest date for this entry
+        // so we can get the most recent statistics.
+        let latestDate: Date = new Date();
+
         // For every date key, add the data
         dateKeys.forEach((dateStr) => {
             let date = getDate(dateStr);
-            confirmed.set(date, confirmedObj[index][dateStr]);  // Set the data for the current index and date
-            deaths.set(date, deathsObj[index][dateStr]);        //
-            recovered.set(date, recoveredObj[index][dateStr]);  //
+            confirmed.set(date, parseInt(confirmedObj[index][dateStr]));  // Set the data for the current index and date
+            deaths.set(date, parseInt(deathsObj[index][dateStr]));        //
+            recovered.set(date, parseInt(recoveredObj[index][dateStr]));  //
+            // Set the latest date. This will run last so the var should contain the latest
+            latestDate = date;
         });
 
         let city: string | undefined = undefined;
@@ -104,11 +221,12 @@ export async function getLatestData(): Promise<RegionRecord[]> {
             value["Long"],
             confirmed,
             deaths,
-            recovered
+            recovered,
+            latestDate
         ))
     });
 
-    return records;
+    return new HistoricalInfectionData(records);
 }
 
 function isDate(text: string): boolean {
