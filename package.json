@@ -6,7 +6,7 @@
   "scripts": {
     "start": "npx ts-node app/app.ts",
     "build": "npx tsc",
-    "prod": "cd frontend && npm run build && cd .. && npm run start"
+    "build-frontend": "cd frontend && npm run build"
   },
   "author": "",
   "license": "ISC",
