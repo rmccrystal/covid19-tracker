@@ -23,7 +23,7 @@ export default class InfectionData {
 
     getGlobalInfections(): InfectionEntry {
         let entry = sumInfectionEntries(this.getInfections());
-        entry.region = "Global";
+        entry.region = "Globally";
         return entry;
     }
 
