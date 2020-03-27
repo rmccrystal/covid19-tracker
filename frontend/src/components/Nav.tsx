@@ -23,7 +23,7 @@ export default class Nav extends Component<NavProps> {
                 <Link className="bp3-button-text" to={"/about"}><Button className={Classes.MINIMAL} icon="info-sign" text="About" /></Link>
             </NavbarGroup>
             <NavbarGroup align={Alignment.RIGHT}>
-                <Button className={Classes.MINIMAL} onClick={this.props.toggleDarkMode} icon={"contrast"} />
+                {/*<Button className={Classes.MINIMAL} onClick={this.props.toggleDarkMode} icon={"contrast"} />*/}
             </NavbarGroup>
         </Navbar>
     }
