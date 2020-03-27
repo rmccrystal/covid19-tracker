@@ -2,7 +2,6 @@ import React, {Component} from "react";
 
 import "./LoadingScreen.scss"
 
-import reactSpinners from "react-spinners";
 import {H4, Spinner} from "@blueprintjs/core";
 
 interface LoadingScreenProps {

@@ -1,12 +1,8 @@
 import React, {Component} from "react";
 import InfectionEntry from "../shared/InfectionEntry";
-import {Card, Elevation, H2, InputGroup} from "@blueprintjs/core";
-import {FontAwesomeIcon} from "@fortawesome/react-fontawesome";
-import * as Icons from '@fortawesome/free-solid-svg-icons';
-import { Colors } from "@blueprintjs/core";
+import {Card, Elevation, H2, HTMLTable, Icon, InputGroup} from "@blueprintjs/core";
 import "./InfectionTable.scss"
-import {Cell, Column, SelectionModes, Table} from "@blueprintjs/table";
-import {useTable} from "react-table";
+import {useTable, useSortBy, TableState} from "react-table";
 
 interface InfectionTableProps {
     entries: InfectionEntry[]
@@ -29,9 +25,9 @@ export default class InfectionTable extends Component<InfectionTableProps, Compo
                     <H2 className="text-left">
                         {this.props.title}
                     </H2>
-                    <InfectionTableComponent entries={this.props.entries} />
-            </Card>
-        </div>)
+                    <InfectionTableComponent entries={this.props.entries}/>
+                </Card>
+            </div>)
     }
 }
 
@@ -44,20 +40,25 @@ const InfectionTableComponent = (props: InfectionTableComponentProps) => {
     const columns = React.useMemo(() => [
         {
             Header: "Region",
-            accessor: "country"
+            accessor: "country",
         },
         {
             Header: "Infections",
-            accessor: "infections"
+            accessor: "infections",
+            sortDescFirst: true
         },
         {
             Header: "Deaths",
-            accessor: "dead"
+            accessor: "dead",
+            sortDescFirst: true
         },
         {
             Header: "Recovered",
-            accessor: "recovered"
+            accessor: "recovered",
+            sortDescFirst: true
         }], []);
+
+    const sorted = [{id: "infections", desc: true}];
 
     const {
         getTableProps,
@@ -65,31 +66,41 @@ const InfectionTableComponent = (props: InfectionTableComponentProps) => {
         headerGroups,
         rows,
         prepareRow,
-    } = useTable({ columns, data });
+    } = useTable({columns, data}, useSortBy);
 
     return (
-        <table {...getTableProps()}>
-            <thead>
-            {headerGroups.map(headerGroup => (
-                <tr {...headerGroup.getHeaderGroupProps()}>
-                    {headerGroup.headers.map(column => (
-                        <th {...column.getHeaderProps()}>{column.render('Header')}</th>
-                    ))}
-                </tr>
-            ))}
-            </thead>
-            <tbody {...getTableBodyProps()}>
-            {rows.map(row => {
-                prepareRow(row)
-                return (
-                    <tr {...row.getRowProps()}>
-                        {row.cells.map(cell => {
-                            return <td {...cell.getCellProps()}>{cell.render('Cell')}</td>
-                        })}
+        <Card className="infection-table-card">
+            <HTMLTable {...getTableProps()} condensed striped interactive small bordered className="infection-table">
+                <thead className="infection-table-thead">
+                {headerGroups.map(headerGroup => (
+                    <tr {...headerGroup.getHeaderGroupProps()}>
+                        {headerGroup.headers.map((column: any) => (
+                            <th {...column.getHeaderProps(column.getSortByToggleProps())}>
+                                {column.render('Header')}
+                                <span style={{float: "right"}}>
+                                    {
+                                        column.canSort ? column.isSorted ? (column.isSortedDesc ? <Icon icon="chevron-down" /> : <Icon icon="chevron-up" />) : <Icon icon="expand-all" /> : {}
+                                    }
+                                </span>
+                            </th>
+                        ))}
                     </tr>
-                )
-            })}
-            </tbody>
-        </table>
+                ))}
+                </thead>
+                <tbody {...getTableBodyProps()} className="infection-table-content">
+                {rows.map(row => {
+                    prepareRow(row)
+                    return (
+                        <tr {...row.getRowProps()}>
+                            {row.cells.map(cell => {
+                                console.log(cell);
+                                return <td {...cell.getCellProps()}>{cell.render('Cell')}</td>
+                            })}
+                        </tr>
+                    )
+                })}
+                </tbody>
+            </HTMLTable>
+        </Card>
     )
 }
