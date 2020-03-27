@@ -33,7 +33,8 @@ export default class App extends Component<AppProps, AppState> {
     }
 
     componentDidMount(): void {
-        this.updateInefctionData()
+        this.updateInefctionData();
+        setInterval(this.updateInefctionData.bind(this), 60000);    // Update data every 60 seconds
     }
 
     updateInefctionData() {
@@ -45,7 +46,7 @@ export default class App extends Component<AppProps, AppState> {
             });
         })
             .catch(reason => {
-                setTimeout(this.componentDidMount.bind(this), 3000) // Try again in 3 seconds if it doesn't work
+                setTimeout(this.updateInefctionData.bind(this), 3000) // Try again in 3 seconds if it doesn't work
             });
     }
 
