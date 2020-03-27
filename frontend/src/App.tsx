@@ -33,6 +33,10 @@ export default class App extends Component<AppProps, AppState> {
     }
 
     componentDidMount(): void {
+        this.updateInefctionData()
+    }
+
+    updateInefctionData() {
         getDataFromServer().then(data => {
             this.setState({
                 darkMode: this.state.darkMode,
@@ -40,9 +44,9 @@ export default class App extends Component<AppProps, AppState> {
                 data: data
             });
         })
-        .catch(reason => {
-            alert(reason);
-        });
+            .catch(reason => {
+                setTimeout(this.componentDidMount.bind(this), 3000) // Try again in 3 seconds if it doesn't work
+            });
     }
 
     render() {
