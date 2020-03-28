@@ -20,8 +20,8 @@ export default class InfectionTable extends Component<InfectionTableProps, Compo
 
     render() {  // TODO: Add sorting
         return (
-            <div className="container-fluid mb-4 col infection-table">
-                <Card elevation={Elevation.TWO}>
+            <div className="mb-4 infection-table">
+                <Card elevation={Elevation.ZERO}>
                     <H2 className="text-left">
                         {this.props.title}
                     </H2>

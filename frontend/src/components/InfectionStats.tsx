@@ -53,7 +53,7 @@ export default class InfectionStats extends Component<InfectionStatsProps, Infec
 
     render() {
         return (
-            <Card elevation={Elevation.TWO} className="infection-card text-center" interactive style={{width: "100%"}}>
+            <Card elevation={Elevation.TWO} className="infection-card text-center" style={{width: "100%"}}>
                 <InfectionEntrySelect
                     items={this.props.entries}
                     itemRenderer={infectionEntryRenderer}
