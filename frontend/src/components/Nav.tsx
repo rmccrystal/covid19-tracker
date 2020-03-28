@@ -1,6 +1,6 @@
 import React, {Component, MouseEventHandler} from "react";
 import {Navbar, NavDropdown, Nav as BootstrapNav} from "react-bootstrap";
-import {Button, Classes, Divider, H3} from "@blueprintjs/core";
+import {Button, Card, Classes, Divider, H3} from "@blueprintjs/core";
 import {Link} from "react-router-dom";
 
 import "./Nav.scss"
@@ -14,6 +14,7 @@ interface NavProps {
 export default class Nav extends Component<NavProps> {
     render() {
         return (
+            <Card className="navbar-card">
             <Navbar className="page-navbar" expand="lg">
                 <Navbar.Brand><H3>{this.props.title}</H3></Navbar.Brand>
                 <Navbar.Toggle aria-controls="basic-navbar-nav" />
@@ -31,6 +32,7 @@ export default class Nav extends Component<NavProps> {
                     </BootstrapNav>
                 </Navbar.Collapse>
             </Navbar>
+            </Card>
         )
     }
 }
