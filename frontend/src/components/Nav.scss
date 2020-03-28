@@ -1,0 +1,9 @@
+@import "~@blueprintjs/core/lib/scss/variables";
+
+.bp3-dark .page-navbar {
+  background-color: $dark-gray4;
+}
+
+.bp3-light .page-navbar {
+  background-color: $white;
+}
