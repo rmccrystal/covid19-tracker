@@ -3,6 +3,7 @@ import Api, {updateLatestData} from "./api"
 import cors from "cors"
 import {getInfectionData} from "./data/data";
 import * as path from "path";
+import morgan from "morgan";
 
 const app = express();
 setInterval(() => {
@@ -15,6 +16,7 @@ getInfectionData().then(data => {
     updateLatestData(data);
 });
 
+app.use(morgan('common'));
 
 app.use(cors());
 app.use(express.static('frontend/build'));
