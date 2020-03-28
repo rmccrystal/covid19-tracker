@@ -21,7 +21,8 @@ export default class Map extends Component<{}, MapState> {
     render() {
         return (
             <div className="container-fluid maps-container mt-3">
-                <Card style={{display: "inline-block"}} className="mb-3">
+                <Card style={{display: "inline-block"}} className="mb-3 pt-1">
+                    <small>Source: New York Times</small>
                     <Tabs
                         id="maps-tabs"
                         vertical={false}
