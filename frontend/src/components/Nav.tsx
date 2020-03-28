@@ -1,5 +1,5 @@
 import React, {Component, MouseEventHandler} from "react";
-import {Navbar, NavDropdown, Nav as BootstrapNav} from "react-bootstrap";
+import {Navbar, Nav as BootstrapNav} from "react-bootstrap";
 import {Button, Card, Classes, Divider, H3} from "@blueprintjs/core";
 import {Link} from "react-router-dom";
 

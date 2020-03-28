@@ -10,7 +10,6 @@ import InfectionData from "./shared/InfectionData";
 import LoadingScreen from "./components/LoadingScreen";
 import FadeIn from "react-fade-in";
 import {getDataFromServer} from "./data/backend";
-import InfectionEntry from "./shared/InfectionEntry";
 import Wiki from "./views/Wiki";
 import Map from "./views/Map/Map";
 

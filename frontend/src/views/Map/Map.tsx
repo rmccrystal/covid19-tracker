@@ -5,7 +5,7 @@ import USMap from "./screenshots/us.png";
 import AsiaMap from "./screenshots/asia.png";
 import EuropeMap from "./screenshots/europe.png";
 import "./Map.scss";
-import {Alignment, Card, Navbar} from "@blueprintjs/core";
+import {Card} from "@blueprintjs/core";
 import {Tab, Tabs} from "@blueprintjs/core";
 
 interface MapState {
