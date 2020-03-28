@@ -1,5 +1,5 @@
 import React, {Component} from 'react';
-import {Card, Elevation, H1, H3} from "@blueprintjs/core";
+import {Card, Elevation, H1} from "@blueprintjs/core";
 import "./About.scss";
 
 export default class Wiki extends Component {
@@ -24,7 +24,7 @@ export default class Wiki extends Component {
                         </li>
                         <li>Determine whether <a
                             href="https://www.worldometers.info/coronavirus/coronavirus-incubation-period/#asy"
-                            target="_blank">asymptomatic
+                            target="_blank" rel="noopener noreferrer">asymptomatic
                             transmission </a>is possible
                         </li>
                     </ul>
