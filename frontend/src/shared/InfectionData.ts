@@ -13,7 +13,7 @@ export default class InfectionData {
     // Gets all of the infections with no specific region assocaited with it
     getInfections(): InfectionEntry[] {
         return this.entries.filter((entry) => {
-            return entry.category == undefined
+            return entry.category === undefined
         })
     }
 
