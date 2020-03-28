@@ -12,6 +12,7 @@ import FadeIn from "react-fade-in";
 import {getDataFromServer} from "./data/backend";
 import InfectionEntry from "./shared/InfectionEntry";
 import Wiki from "./views/Wiki";
+import Map from "./views/Map/Map";
 
 interface AppProps {
 }
@@ -32,8 +33,8 @@ export default class App extends Component<AppProps, AppState> {
         }
     }
 
-    componentDidMount(): void {
-        this.updateInefctionData();
+        componentDidMount(): void {
+            this.updateInefctionData();
         setInterval(this.updateInefctionData.bind(this), 60000);    // Update data every 60 seconds
     }
 
@@ -69,6 +70,7 @@ export default class App extends Component<AppProps, AppState> {
                     </Route>
                     <Route path={"/about"} component={About}/>
                     <Route path={"/wiki"} component={Wiki}/>
+                    <Route path={"/map"} component={Map}/>
                 </Router>
             </div>
         );
