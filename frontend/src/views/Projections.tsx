@@ -10,7 +10,7 @@ export default class Projections extends Component<ProjectionsProps> {
     render() {
         return (
             <div className="container">
-                <InfectionChart entry={this.props.data.historicalEntries[225]} type={"infections"}/>
+                <InfectionChart entries={this.props.data.historicalEntries} type={"infections"}/>
             </div>
         )
     }

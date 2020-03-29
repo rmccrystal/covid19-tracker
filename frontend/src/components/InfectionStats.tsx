@@ -6,22 +6,8 @@ import InfectionEntry from "../shared/InfectionEntry";
 import * as Icons from "@fortawesome/free-solid-svg-icons";
 import {FontAwesomeIcon} from "@fortawesome/react-fontawesome";
 import {ItemRenderer, Select} from "@blueprintjs/select";
-
-const InfectionEntrySelect = Select.ofType<InfectionEntry>();
-
-const infectionEntryRenderer: ItemRenderer<InfectionEntry> = (item, itemProps) => {
-    if (!itemProps.modifiers.matchesPredicate) {
-        return null;
-    }
-    return (
-        <MenuItem
-            active={itemProps.modifiers.active}
-            key={item.region}
-            text={item.region}
-            onClick={itemProps.handleClick}
-        />
-    );
-};
+import IInfectionEntry from "../shared/IInfectionEntry";
+import InfectionEntrySelector from "./InfectionEntrySelector";
 
 interface InfectionStatsProps {
     entries: InfectionEntry[]
@@ -54,17 +40,7 @@ export default class InfectionStats extends Component<InfectionStatsProps, Infec
     render() {
         return (
             <Card elevation={Elevation.TWO} className="infection-card text-center" style={{width: "100%"}}>
-                <InfectionEntrySelect
-                    items={this.props.entries}
-                    itemRenderer={infectionEntryRenderer}
-                    onItemSelect={this.setSelectedEntry.bind(this)}
-                    itemPredicate={(query: string, item: InfectionEntry): boolean => {  // Search function
-                        return item.region.toLowerCase().includes(query.toLowerCase());
-                    }}>
-                    <Button rightIcon="double-caret-vertical" minimal={true}>
-                        <H1 style={{textDecoration: "underline"}}>{this.state.selectedEntry.region}</H1>
-                    </Button>
-                </InfectionEntrySelect>
+                <InfectionEntrySelector entries={this.props.entries} onSelect={this.setSelectedEntry.bind(this)} defaultEntry={this.props.entries[0]} />
                 {this.renderEntry(this.state.selectedEntry)}
             </Card>
         )
@@ -100,7 +76,7 @@ export default class InfectionStats extends Component<InfectionStatsProps, Infec
         </div>)
     }
 
-    setSelectedEntry(entry: InfectionEntry) {
-        this.setState({selectedEntry: entry});
+    setSelectedEntry(entry: IInfectionEntry) {
+        this.setState({selectedEntry: entry as InfectionEntry});
     }
 }

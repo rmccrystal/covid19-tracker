@@ -1,4 +1,6 @@
-export default class HistoricalInfectionEntry {
+import IInfectionEntry from "./IInfectionEntry";
+
+export default class HistoricalInfectionEntry implements IInfectionEntry {
     region: string;
     infections: Array<[number, number]>;        // {daysSinceFirstCase, infections}
     dead: Array<[number, number]>;              // {daysSinceFirstCase, dead}
@@ -24,4 +26,50 @@ export default class HistoricalInfectionEntry {
         entry.recovered = json['recovered'];
         return entry;
     }
+
+    getDaysSinceFirstCase(): number {
+        if(!this.firstCase) return 0;
+        return getDateDifferenceInDays(this.firstCase, new Date());
+    }
+
+    getLatestInfections(): number {
+        let latestDay: number = 0;
+        let latestCount: number = 0;
+        this.infections.forEach((entry) => {
+            if(entry[0] > latestDay) {
+                latestDay = entry[0];
+                latestCount = entry[1];
+            }
+        });
+        return latestCount
+    }
+
+    getLatestDeaths(): number {
+        let latestDay: number = 0;
+        let latestCount: number = 0;
+        this.dead.forEach((entry) => {
+            if(entry[0] > latestDay) {
+                latestDay = entry[0];
+                latestCount = entry[1];
+            }
+        });
+        return latestCount
+    }
+
+    getLatestRecoveries(): number {
+        let latestDay: number = 0;
+        let latestCount: number = 0;
+        this.recovered.forEach((entry) => {
+            if(entry[0] > latestDay) {
+                latestDay = entry[0];
+                latestCount = entry[1];
+            }
+        });
+        return latestCount
+    }
+}
+
+// earlier date first
+function getDateDifferenceInDays(dt1: Date, dt2: Date) {
+    return Math.floor((Date.UTC(dt2.getFullYear(), dt2.getMonth(), dt2.getDate()) - Date.UTC(dt1.getFullYear(), dt1.getMonth(), dt1.getDate()) ) /(1000 * 60 * 60 * 24));
 }
