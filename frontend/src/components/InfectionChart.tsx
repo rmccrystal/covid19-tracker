@@ -18,9 +18,17 @@ interface InfectionChartState {
 export default class InfectionChart extends Component<InfectionChartProps, InfectionChartState> {
     constructor(props: InfectionChartProps) {
         // Sort the entries by most cases to least
-        props.entries.sort((a, b) => (a.getLatestInfections() < b.getLatestInfections() ? 1 : -1));
         super(props);
-        this.state = {selectedEntry: props.entries[0]}
+        this.sortInfectionEntries()
+        this.state = {selectedEntry: props.entries[0]};
+    }
+
+    componentDidUpdate() {
+        this.sortInfectionEntries()
+    }
+
+    sortInfectionEntries() {
+        this.props.entries.sort((a, b) => (a.getLatestInfections() < b.getLatestInfections() ? 1 : -1));
     }
 
     render() {
