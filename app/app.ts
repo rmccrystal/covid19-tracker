@@ -4,6 +4,8 @@ import cors from "cors"
 import {getInfectionData} from "./data/data";
 import * as path from "path";
 import morgan from "morgan";
+import {getAllHistoricalEntries} from "./data/historicalDataApi";
+import * as fs from "fs";
 
 const app = express();
 setInterval(() => {

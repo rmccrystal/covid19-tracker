@@ -1,7 +1,5 @@
 import express from 'express';
-import {getInfectionData} from "./data/data";
 import InfectionData from "../frontend/src/shared/InfectionData";
-import {HistoricalInfectionData} from "./data/historicalDataApi";
 
 var router = express.Router();
 var latestData: InfectionData | undefined = undefined;   // this will be updated with the latest data

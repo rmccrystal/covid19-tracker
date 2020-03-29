@@ -12,6 +12,7 @@ import FadeIn from "react-fade-in";
 import {getDataFromServer} from "./data/backend";
 import Wiki from "./views/Wiki";
 import Map from "./views/Map/Map";
+import Projections from "./views/Projections";
 
 interface AppProps {
 }
@@ -28,7 +29,7 @@ export default class App extends Component<AppProps, AppState> {
         this.state = {
             darkMode: true,
             dataLoaded: false,
-            data: new InfectionData([])
+            data: new InfectionData([], [])
         }
     }
 
@@ -46,6 +47,7 @@ export default class App extends Component<AppProps, AppState> {
             });
         })
             .catch(reason => {
+                console.log(reason);
                 setTimeout(this.updateInefctionData.bind(this), 3000) // Try again in 3 seconds if it doesn't work
             });
     }
@@ -70,6 +72,16 @@ export default class App extends Component<AppProps, AppState> {
                     <Route path={"/about"} component={About}/>
                     <Route path={"/wiki"} component={Wiki}/>
                     <Route path={"/map"} component={Map}/>
+                    <Route path={"/projections"}>
+                        {
+                            this.state.dataLoaded ?
+                                <Projections data={this.state.data}/>
+                                :
+                                <FadeIn>
+                                    <LoadingScreen text={"Fetching latest data..."}/>
+                                </FadeIn>
+                        }
+                    </Route>
                 </Router>
             </div>
         );

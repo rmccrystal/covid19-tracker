@@ -12,5 +12,6 @@ import 'bootstrap/dist/css/bootstrap.min.css';
 import 'bootstrap/dist/js/bootstrap.min.js';
 import '@fortawesome/fontawesome-svg-core/styles.css';
 import 'font-awesome/css/font-awesome.min.css';
+import '@nivo/line';
 
 ReactDOM.render(<App />, document.getElementById('root'));

@@ -1,13 +1,16 @@
 import InfectionEntry, {Category, sumInfectionEntries} from "./InfectionEntry";
+import HistoricalInfectionEntry from "./HistoricalInfectionEntry";
 
 /*
  * The class containing all of the data from the server
  */
 export default class InfectionData {
     entries: InfectionEntry[] = [];
+    historicalEntries: HistoricalInfectionEntry[] = [];
 
-    constructor(entries: InfectionEntry[]) {
+    constructor(entries: InfectionEntry[], historicalEntries: HistoricalInfectionEntry[]) {
         this.entries = entries;
+        this.historicalEntries = historicalEntries;
     }
 
     // Gets all of the infections with no specific region assocaited with it
@@ -47,11 +50,16 @@ export default class InfectionData {
         }
 
         let entries: InfectionEntry[] = [];
+        let historicalEntries: HistoricalInfectionEntry[] = [];
 
         json['entries'].forEach((item: any) => {
             entries.push(new InfectionEntry(item.region, parseInt(item.infections), parseInt(item.dead), parseInt(item.recovered), item.category))
         });
-        return new InfectionData(entries);
+        json['historicalEntries'].forEach((entry: any) => {
+            historicalEntries.push(HistoricalInfectionEntry.fromJson(entry));
+        });
+
+        return new InfectionData(entries, historicalEntries);
     }
 }
 
