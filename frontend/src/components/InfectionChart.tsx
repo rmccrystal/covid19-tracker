@@ -29,7 +29,7 @@ export default class InfectionChart extends Component<InfectionChartProps> {
                         sliceTooltip={(props: SliceTooltipProps) => {
                             return (
                                 <Card className="p-2">
-                                    <h5>{this.getDate(props.slice.points[0].data.x).getUTCMonth()}</h5>
+                                    <h5>{this.getDate(props.slice.points[0].data.x).toDateString().slice(4, -5)}</h5>
                                    <p>{props.slice.points[0].data.y.toLocaleString()} infections</p>
                                 </Card>
                             )
