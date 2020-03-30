@@ -13,9 +13,14 @@ import {getDataFromServer} from "./data/backend";
 import Wiki from "./views/Wiki";
 import Map from "./views/Map/Map";
 import Projections from "./views/Projections";
+import createHistory from "history/createBrowserHistory"
+import ReactGA from "react-ga";
 
-interface AppProps {
-}
+const history = createHistory();
+history.listen(location => {
+    ReactGA.set({ page: location.pathname })
+    ReactGA.pageview(location.pathname)
+});
 
 interface AppState {
     darkMode: boolean;
@@ -23,8 +28,8 @@ interface AppState {
     data: InfectionData;
 }
 
-export default class App extends Component<AppProps, AppState> {
-    constructor(props: Readonly<AppProps>) {
+export default class App extends Component<{}, AppState> {
+    constructor(props: any) {
         super(props);
         this.state = {
             darkMode: true,

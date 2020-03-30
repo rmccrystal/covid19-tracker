@@ -14,4 +14,8 @@ import '@fortawesome/fontawesome-svg-core/styles.css';
 import 'font-awesome/css/font-awesome.min.css';
 import '@nivo/line';
 
+import ReactGA from "react-ga";
+
+ReactGA.initialize('UA-162103195-1');
+
 ReactDOM.render(<App />, document.getElementById('root'));
