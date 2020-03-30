@@ -18,6 +18,7 @@ import ReactGA from 'react-ga'
 import {createBrowserHistory} from "history";
 
 ReactGA.initialize("UA-162103195-1");
+ReactGA.pageview(window.location.pathname + window.location.search);
 
 const history = createBrowserHistory();;
 
