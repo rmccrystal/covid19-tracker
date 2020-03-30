@@ -45,11 +45,16 @@ async function getUSEntries(): Promise<InfectionEntry[]> {
         if(entry['USAState'] == "Total:") {
             return
         }
+
+        var active = entry['ActiveCases'] ? parseInt(entry['ActiveCases'].replace(',', '')) : 0;
+        var infections = entry['TotalCases'] ? parseInt(entry['TotalCases'].replace(',', '')) : 0;
+        var recovered = infections - active;
+        var dead = entry['TotalDeaths'] ? parseInt(entry['TotalDeaths'].replace(',', '')) : 0
         entries.push(new InfectionEntry(
             entry['USAState'],
-            entry['TotalCases'] ? parseInt(entry['TotalCases'].replace(',', '')) : 0,
-            entry['TotalDeaths'] ? parseInt(entry['TotalDeaths'].replace(',', '')) : 0,
-            entry['TotalRecovered'] ? parseInt(entry['TotalRecovered'].replace(',', '')) : 0,
+            infections,
+            dead,
+            recovered,
             "United States"
         ));
     });
