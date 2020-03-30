@@ -1,0 +1,30 @@
+.bp3-dark .map {
+  filter: invert(92%) hue-rotate(180deg);
+}
+
+.maps-container {
+  text-align: center;
+}
+
+.map {
+  display: block;
+  margin-left: auto;
+  margin-right: auto;
+  width: auto;
+  max-height: 80vh;
+  max-width: 100vw;
+}
+
+.map-card {
+  padding: 0 !important;
+  display: inline-block;
+  text-align: center;
+}
+
+.map-selector {
+  display: inline-block !important;
+}
+
+.map-selector > div {
+  display: inline-block !important;
+}

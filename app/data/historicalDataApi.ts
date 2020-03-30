@@ -1,8 +1,13 @@
 import axios from "axios";
 import parse from "csv-parse/lib/sync";
 import InfectionEntry from "../../frontend/src/shared/InfectionEntry";
+import HistoricalInfectionEntry from "../../frontend/src/shared/HistoricalInfectionEntry";
 
-export class HistoricalInfectionData {
+export async function getAllHistoricalEntries(): Promise<HistoricalInfectionEntry[]> {
+    return (await getLatestData()).getAllEntries()
+}
+
+class HistoricalInfectionData {
     //lastUpdated: Date
     private records: RegionRecord[];
 
@@ -18,73 +23,13 @@ export class HistoricalInfectionData {
      */
 
     // Gets all of the latest region records
-    getAllEntries(): InfectionEntry[] {
-        var entries: InfectionEntry[] = [];
+    getAllEntries(): HistoricalInfectionEntry[] {
+        var entries: HistoricalInfectionEntry[] = [];
         this.records.forEach(record => {
-            entries.push(record.getLatestEntry())
+            entries.push(record.getHistoricalInfectionEntry())
         });
 
         return entries;
-    }
-
-    // Gets every region record except city level records
-    // We won't be displaying city level data as of now
-    // TODO: Implement city level data
-    getStateEntries(): InfectionEntry[] {
-        return this.getAllEntries().filter(entry => {
-            return entry.city === undefined;        // Return all of the entries where city is undefined
-        })
-    }
-
-    getCountryEntries(): InfectionEntry[] {
-        var entries: InfectionEntry[] = [];
-
-        // countryEntries is a map of countries and associated entries from every state
-        // We need to sum the entries for every state to get the country level data.
-        var countryEntries: Map<string, Array<InfectionEntry>> = new Map<string, Array<InfectionEntry>>();
-
-        /*
-         * If there is no state associated with the entry, we can safely assume
-         * that the country accounts for the entire country.
-         * If there is a state associated with the entry, sum all
-         * of the entries from that state
-         */
-        this.getStateEntries().forEach(entry => {
-            if(entry.state === undefined) {
-                entries.push(entry);
-                return
-            }
-
-            // If we don't already have something in the array for this country
-            if(countryEntries.get(entry.region) === undefined) {
-                countryEntries.set(entry.region, [entry])
-            } else {
-                // Else, append the entry to the map
-                countryEntries.set(
-                    entry.region,
-                    countryEntries.get(entry.region).concat([entry])
-                )
-            }
-        });
-
-        // Sum every entry for countryEntries and add the final result to entries
-
-        // Iterate through every country
-        for(let country of countryEntries.keys()) {
-            // Make a new variable that we can add new infections to
-            let newInfectionEntry: InfectionEntry = new InfectionEntry(country, 0, 0, 0);
-            countryEntries.get(country).forEach((entry) => {
-                // Loop over every infection entry for country `country`
-                // Add the data from the state level entry to the newInfectionEntry
-                newInfectionEntry.infections += entry.infections;
-                newInfectionEntry.dead += entry.dead;
-                newInfectionEntry.recovered += entry.recovered;
-            });
-
-            entries.push(newInfectionEntry);
-        }
-
-        return entries
     }
 }
 
@@ -105,11 +50,12 @@ export class RegionRecord {
     lat: number;
     long: number;
 
-    confirmed: Map<Date, number>;   // A map of dates and the amount of new cases on that date
+    infections: Map<Date, number>;   // A map of dates and the amount of new cases on that date
     deaths: Map<Date, number>;      // Same thing here but for deaths
     recoveries: Map<Date, number>;  //
 
     latestDate: Date;       // The latest date containing data. Used to get the latest statistics
+    firstInfection: Date;   // The date of the first infection
 
     constructor(city: string | undefined, state: string | undefined, country: string, lat: number, long: number, confirmed: Map<Date, number>, deaths: Map<Date, number>, recoveries: Map<Date, number>, latestDate: Date) {
         this.city = city == '' ? undefined : city;      // If there is no string for city set it to undefined
@@ -117,25 +63,31 @@ export class RegionRecord {
         this.country = country;
         this.lat = lat;
         this.long = long;
-        this.confirmed = confirmed;
+        this.infections = confirmed;
         this.deaths = deaths;
         this.recoveries = recoveries;
         this.latestDate = latestDate;
+
+        this.firstInfection = new Date();
+        this.infections.forEach(((inf, date) => {   // Loop through every infection and find the earliest one
+            if(inf == 0) return;    // Skip if there are no infections
+            if(date < this.firstInfection) {    // If the date is earlier than the
+                this.firstInfection = date;
+            }
+        }))
     }
 
     getEntryByDate(date: Date): InfectionEntry {
-        if(this.confirmed.get(date) === undefined) {
+        if(this.infections.get(date) === undefined) {
             throw new Error("no entries for that date");
         }
 
         return new InfectionEntry(
             this.country,
-            this.confirmed.get(date),
+            this.infections.get(date),
             this.deaths.get(date),
             this.recoveries.get(date),
             undefined,
-            this.city,
-            this.state
         )
     }
 
@@ -143,11 +95,39 @@ export class RegionRecord {
     getLatestEntry(): InfectionEntry {
         return this.getEntryByDate(this.latestDate);
     }
+
+    getHistoricalInfectionEntry(): HistoricalInfectionEntry {
+        let region;
+        if(this.city) { region = this.city }        // Set the region based on the most accurate location
+        else if(this.state) { region = this.state }
+        else { region = this.country }
+
+        let infectionsArr: Array<{daysSinceFirstCase: number, infections: number}> = [];
+        let deadArr: Array<{daysSinceFirstCase: number, dead: number}> = [];
+        let recoveredArr: Array<{daysSinceFirstCase: number, recovered: number}> = [];
+
+        this.infections.forEach(((infections, date) => {
+            if(date < this.firstInfection) return;     // return if we haven't hit the first infection yet
+            infectionsArr.push({daysSinceFirstCase: getDateDifferenceInDays(this.firstInfection, date), infections: infections});
+        }));
+
+        this.deaths.forEach(((deaths, date) => {
+            if(date < this.firstInfection) return;     // return if we haven't hit the first infection yet
+            deadArr.push({daysSinceFirstCase: getDateDifferenceInDays(this.firstInfection, date), dead: deaths});
+        }));
+
+        this.recoveries.forEach(((recoveries, date) => {
+            if(date < this.firstInfection) return;     // return if we haven't hit the first infection yet
+            recoveredArr.push({daysSinceFirstCase: getDateDifferenceInDays(this.firstInfection, date), recovered: recoveries});
+        }));
+
+        return new HistoricalInfectionEntry(region, infectionsArr, deadArr, recoveredArr, this.firstInfection);
+    }
 }
 
-const CONFIRMED_URL = "https://raw.githubusercontent.com/CSSEGISandData/COVID-19/master/csse_covid_19_data/csse_covid_19_time_series/time_series_19-covid-Confirmed.csv"
-const DEATHS_URL = "https://raw.githubusercontent.com/CSSEGISandData/COVID-19/master/csse_covid_19_data/csse_covid_19_time_series/time_series_19-covid-Deaths.csv";
-const RECOVERED_URL = "https://raw.githubusercontent.com/CSSEGISandData/COVID-19/master/csse_covid_19_data/csse_covid_19_time_series/time_series_19-covid-Recovered.csv";
+const CONFIRMED_URL = "https://raw.githubusercontent.com/CSSEGISandData/COVID-19/master/csse_covid_19_data/csse_covid_19_time_series/time_series_covid19_confirmed_global.csv"
+const DEATHS_URL = "https://raw.githubusercontent.com/CSSEGISandData/COVID-19/master/csse_covid_19_data/csse_covid_19_time_series/time_series_covid19_deaths_global.csv";
+const RECOVERED_URL = "https://raw.githubusercontent.com/CSSEGISandData/COVID-19/master/csse_covid_19_data/csse_covid_19_time_series/time_series_covid19_recovered_global.csv";
 
 /*
  * Returns a list of RegionData entries gathered from
@@ -198,7 +178,18 @@ export async function getLatestData(): Promise<HistoricalInfectionData> {
             let date = getDate(dateStr);
             confirmed.set(date, parseInt(confirmedObj[index][dateStr]));  // Set the data for the current index and date
             deaths.set(date, parseInt(deathsObj[index][dateStr]));        //
-            recovered.set(date, parseInt(recoveredObj[index][dateStr]));  //
+
+            // Recovered is misaligned with confirmed, so we have to search through the dataset
+            // Get entry from the recovered list with the same region and state as this entry
+            let recoveredEntries = recoveredObj.filter(entry => {  // Get all entries where state is the same and country is the same
+                return (entry["Province/State"] == value["Province/State"]) && (entry["Country/Region"] == value ["Country/Region"])
+            });
+            if(recoveredEntries.length == 0) {  // If there are no entries
+                recovered.set(date, 0);     // we can assume there are no recoveries
+            } else {
+                recovered.set(date, parseInt(recoveredEntries[0][dateStr]));        // get the first element of recoveredEntries
+            }
+
             // Set the latest date. This will run last so the var should contain the latest
             latestDate = date;
         });
@@ -253,14 +244,10 @@ function isDate(text: string): boolean {
 }
 
 function getDate(date: string): Date {
-    if(!isDate(date)) {
-        throw new Error("could not parse date");
-    }
-    let split = date.split("/");
+    return new Date(date);
+}
 
-    let month = parseInt(split[0]);
-    let day = parseInt(split[1]);
-    let year = parseInt(split[2]) + 2000;
-
-    return new Date(year, month, day);
+// earlier date first
+function getDateDifferenceInDays(dt1: Date, dt2: Date) {
+    return Math.floor((Date.UTC(dt2.getFullYear(), dt2.getMonth(), dt2.getDate()) - Date.UTC(dt1.getFullYear(), dt1.getMonth(), dt1.getDate()) ) /(1000 * 60 * 60 * 24));
 }

@@ -10,7 +10,9 @@ import InfectionData from "./shared/InfectionData";
 import LoadingScreen from "./components/LoadingScreen";
 import FadeIn from "react-fade-in";
 import {getDataFromServer} from "./data/backend";
-import InfectionEntry from "./shared/InfectionEntry";
+import Wiki from "./views/Wiki";
+import Map from "./views/Map/Map";
+import Projections from "./views/Projections";
 
 interface AppProps {
 }
@@ -27,11 +29,16 @@ export default class App extends Component<AppProps, AppState> {
         this.state = {
             darkMode: true,
             dataLoaded: false,
-            data: new InfectionData([])
+            data: new InfectionData([], [])
         }
     }
 
-    componentDidMount(): void {
+        componentDidMount(): void {
+            this.updateInefctionData();
+        setInterval(this.updateInefctionData.bind(this), 60000);    // Update data every 60 seconds
+    }
+
+    updateInefctionData() {
         getDataFromServer().then(data => {
             this.setState({
                 darkMode: this.state.darkMode,
@@ -39,9 +46,10 @@ export default class App extends Component<AppProps, AppState> {
                 data: data
             });
         })
-        .catch(reason => {
-            alert(reason);
-        });
+            .catch(reason => {
+                console.log(reason);
+                setTimeout(this.updateInefctionData.bind(this), 3000) // Try again in 3 seconds if it doesn't work
+            });
     }
 
     render() {
@@ -62,6 +70,18 @@ export default class App extends Component<AppProps, AppState> {
                         }
                     </Route>
                     <Route path={"/about"} component={About}/>
+                    <Route path={"/wiki"} component={Wiki}/>
+                    <Route path={"/map"} component={Map}/>
+                    <Route path={"/projections"}>
+                        {
+                            this.state.dataLoaded ?
+                                <Projections data={this.state.data}/>
+                                :
+                                <FadeIn>
+                                    <LoadingScreen text={"Fetching latest data..."}/>
+                                </FadeIn>
+                        }
+                    </Route>
                 </Router>
             </div>
         );

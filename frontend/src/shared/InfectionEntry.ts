@@ -1,6 +1,8 @@
+import IInfectionEntry from "./IInfectionEntry";
+
 export type Category = string;
 
-export default class InfectionEntry {
+export default class InfectionEntry implements IInfectionEntry{
     category?: Category | undefined;
     region: string;
     infections: number;
