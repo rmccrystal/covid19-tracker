@@ -37,6 +37,7 @@ interface InfectionTableComponentProps {
 
 const InfectionTableComponent = (props: InfectionTableComponentProps) => {
     const data = React.useMemo(() => props.entries, []);
+    const enableRecoveredColumn: boolean = props.entries.filter(entry => entry.recovered != undefined).length != 0;
     const columns = React.useMemo(() => [
         {
             Header: "Region",
@@ -55,7 +56,8 @@ const InfectionTableComponent = (props: InfectionTableComponentProps) => {
         {
             Header: "Recovered",
             accessor: "recovered",
-            sortDescFirst: true
+            sortDescFirst: true,
+            show: enableRecoveredColumn
         }], []);
 
     const {

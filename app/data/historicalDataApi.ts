@@ -155,11 +155,16 @@ export class RegionRecord {
             throw new Error("no entries for that date");
         }
 
+        let recoveries = 0;
+        if(this.recoveries) {
+            recoveries = this.recoveries.get(date);
+        }
+
         return new InfectionEntry(
             this.country,
             this.infections.get(date),
             this.deaths.get(date),
-            this.recoveries.get(date),
+            recoveries,
             undefined,
         )
     }
@@ -370,13 +375,18 @@ export async function getLatestUSRecords(): Promise<RegionRecord[]> {
         if (split.length == 3) {
             city = split[0];        // The city is the first element of the split
             state = split[1];       // The state is the second element.
+
+            // for some reason there are some weird entries with the city "unassigned" so we'll just remove them here.
+            if (city.toLowerCase().includes("unassigned")) {
+                return;
+            }
         } else if(split.length == 2) {
             state = split[0]
         } else {
             console.error("WE SHOULD NOT BE HERE CHECK THE CODE");
         }
 
-        records.push(new RegionRecord(
+        let record = new RegionRecord(
             city,
             state,
             country,
@@ -386,7 +396,14 @@ export async function getLatestUSRecords(): Promise<RegionRecord[]> {
             deaths,
             undefined,
             latestDate
-        ))
+        );
+
+        // If there are no infections don't use this entry
+        if(record.getLatestEntry().infections == 0) {
+            return;
+        }
+
+        records.push(record);
     });
 
     return records;
