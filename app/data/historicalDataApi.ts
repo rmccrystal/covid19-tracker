@@ -10,9 +10,11 @@ export async function getAllHistoricalEntries(): Promise<HistoricalInfectionEntr
 class HistoricalInfectionData {
     //lastUpdated: Date
     private records: RegionRecord[];
+    private usRecords: RegionRecord[];
 
-    constructor(records: RegionRecord[]) {
+    constructor(records: RegionRecord[], usRecords: RegionRecord[]) {
         this.records = records;
+        this.usRecords = usRecords;
     }
 
     /*
@@ -26,7 +28,7 @@ class HistoricalInfectionData {
     getAllEntries(): HistoricalInfectionEntry[] {
         var entries: HistoricalInfectionEntry[] = [];
 
-        entries.push(this.getGlobalEntry(), this.getEntriesOutsideChina());
+        entries.push(this.getGlobalEntry(), this.getEntriesOutsideChina(), ...this.getUSEntries());
 
         // first push all of the records without states
         this.records.forEach(record => {
@@ -96,6 +98,12 @@ class HistoricalInfectionData {
         entry.region = "Outside China";
         return entry
     }
+
+    getUSEntries(): HistoricalInfectionEntry[] {
+        return this.usRecords.map(record => {
+            return record.getHistoricalInfectionEntry()
+        })
+    }
 }
 
 /*
@@ -117,7 +125,7 @@ export class RegionRecord {
 
     infections: Map<Date, number>;   // A map of dates and the amount of new cases on that date
     deaths: Map<Date, number>;      // Same thing here but for deaths
-    recoveries: Map<Date, number>;  //
+    recoveries: Map<Date, number> | undefined;  // There is no recovery data for the US so it might be undefined
 
     latestDate: Date;       // The latest date containing data. Used to get the latest statistics
     firstInfection: Date;   // The date of the first infection
@@ -164,10 +172,10 @@ export class RegionRecord {
     getHistoricalInfectionEntry(): HistoricalInfectionEntry {
         let region;
         if (this.city) {
-            region = this.city
+            region = `${this.city}, ${this.state}, ${this.country}`
         }        // Set the region based on the most accurate location
         else if (this.state) {
-            region = this.state
+            region = `${this.state}, ${this.country}`
         } else {
             region = this.country
         }
@@ -189,16 +197,22 @@ export class RegionRecord {
             deadArr.push({daysSinceFirstCase: getDateDifferenceInDays(this.firstInfection, date), dead: deaths});
         }));
 
-        this.recoveries.forEach(((recoveries, date) => {
-            if (date < this.firstInfection) return;     // return if we haven't hit the first infection yet
-            recoveredArr.push({
-                daysSinceFirstCase: getDateDifferenceInDays(this.firstInfection, date),
-                recovered: recoveries
-            });
-        }));
+        if(this.recoveries) {
+            this.recoveries.forEach(((recoveries, date) => {
+                if (date < this.firstInfection) return;     // return if we haven't hit the first infection yet
+                recoveredArr.push({
+                    daysSinceFirstCase: getDateDifferenceInDays(this.firstInfection, date),
+                    recovered: recoveries
+                });
+            }));
+        }
 
         return new HistoricalInfectionEntry(region, infectionsArr, deadArr, recoveredArr, this.firstInfection);
     }
+}
+
+export async function getLatestData(): Promise<HistoricalInfectionData> {
+    return new HistoricalInfectionData(await getLatestGlobalRecords(), await getLatestUSRecords())
 }
 
 const CONFIRMED_URL = "https://raw.githubusercontent.com/CSSEGISandData/COVID-19/master/csse_covid_19_data/csse_covid_19_time_series/time_series_covid19_confirmed_global.csv"
@@ -209,7 +223,7 @@ const RECOVERED_URL = "https://raw.githubusercontent.com/CSSEGISandData/COVID-19
  * Returns a list of RegionData entries gathered from
  * three files in https://github.com/CSSEGISandData/COVID-19/tree/master/csse_covid_19_data/csse_covid_19_time_series
  */
-export async function getLatestData(): Promise<HistoricalInfectionData> {
+export async function getLatestGlobalRecords(): Promise<RegionRecord[]> {
     let [confirmedResp, deathsResp, recoveredResp] = await Promise.all([
         axios.get(CONFIRMED_URL),
         axios.get(DEATHS_URL),
@@ -217,7 +231,7 @@ export async function getLatestData(): Promise<HistoricalInfectionData> {
     ]); // Get all three data points
 
     // if there is any errors getting the data
-    if (confirmedResp.status != 200 || confirmedResp.status != 200 || confirmedResp.status != 200) {
+    if (confirmedResp.status != 200 || deathsResp.status != 200 || recoveredResp.status != 200) {
         throw new Error("non 200 response code from github");
     }
 
@@ -293,7 +307,89 @@ export async function getLatestData(): Promise<HistoricalInfectionData> {
         ))
     });
 
-    return new HistoricalInfectionData(records);
+    return records;
+}
+
+const US_CONFIRMED_URL = "https://raw.githubusercontent.com/CSSEGISandData/COVID-19/master/csse_covid_19_data/csse_covid_19_time_series/time_series_covid19_confirmed_US.csv"
+const US_DEATHS_URL = "https://raw.githubusercontent.com/CSSEGISandData/COVID-19/master/csse_covid_19_data/csse_covid_19_time_series/time_series_covid19_deaths_US.csv"
+
+export async function getLatestUSRecords(): Promise<RegionRecord[]> {
+    let [confirmedResp, deathsResp] = await Promise.all([
+        axios.get(US_CONFIRMED_URL),
+        axios.get(US_DEATHS_URL),
+    ]); // Get all three data points
+
+    // if there is any errors getting the data
+    if (confirmedResp.status != 200 || deathsResp.status != 200) {
+        throw new Error("non 200 response code from github");
+    }
+
+    const confirmedCsv = confirmedResp.data;
+    const deathsCsv = deathsResp.data;
+
+    const confirmedObj: Array<object> = parse(confirmedCsv, {columns: true, skip_empty_lines: true});
+    const deathsObj: Array<object> = parse(deathsCsv, {columns: true, skip_empty_lines: true});
+
+    let records: RegionRecord[] = [];
+
+    // Iterate through every confirmed case, grab the corresponding
+    // deaths and recovered and add them to the list of records
+
+    confirmedObj.forEach((value, index) => {
+        // Get all date keys so we can use them to get data
+        let keys: string[] = Object.keys(value);
+        let dateKeys: string[] = keys.filter((key) => {
+            return isDate(key);     // Return if the key is a date
+        });
+
+        let confirmed: Map<Date, number> = new Map();
+        let deaths: Map<Date, number> = new Map();
+
+        // This variable will contain the latest date for this entry
+        // so we can get the most recent statistics.
+        let latestDate: Date = new Date();
+
+        // For every date key, add the data
+        dateKeys.forEach((dateStr) => {
+            let date = getDate(dateStr);
+            confirmed.set(date, parseInt(confirmedObj[index][dateStr]));  // Set the data for the current index and date
+            deaths.set(date, parseInt(deathsObj[index][dateStr]));        //
+
+            // Set the latest date. This will run last so the var should contain the latest
+            latestDate = date;
+        });
+
+        let city: string | undefined = undefined;
+        let region: string = value["Combined_Key"];
+        let country = "US";
+        let state: string;
+
+        // For some reason, some of the regions are seperated by ', ' and some are seperated by just a ','
+        let split = region.split(', ').length >= 2 ? region.split(', ') : region.split(',');
+        // If there are three different comma separated values, there is a city
+        if (split.length == 3) {
+            city = split[0];        // The city is the first element of the split
+            state = split[1];       // The state is the second element.
+        } else if(split.length == 2) {
+            state = split[0]
+        } else {
+            console.error("WE SHOULD NOT BE HERE CHECK THE CODE");
+        }
+
+        records.push(new RegionRecord(
+            city,
+            state,
+            country,
+            value["Lat"],
+            value["Long"],
+            confirmed,
+            deaths,
+            undefined,
+            latestDate
+        ))
+    });
+
+    return records;
 }
 
 function isDate(text: string): boolean {
