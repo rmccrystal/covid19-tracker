@@ -108,13 +108,23 @@ export default class InfectionChart extends Component<InfectionChartProps, Infec
 
         let r2: number | undefined = undefined;
         if(this.state.regression) {
-            // @ts-ignore
-            let [predictedData, _r2] = this.predict(data[0].data, this.state.regressionDays);
-            r2 = _r2;
-            data.push({
-                id: "Predicted",
-                data: predictedData
-            });
+            try {
+                // @ts-ignore
+                let [predictedData, _r2] = this.predict(data[0].data, this.state.regressionDays);
+                r2 = _r2;
+                data.push({
+                    id: "Predicted",
+                    data: predictedData
+                });
+            } catch(e) {
+                console.log(e);
+                this.setState({
+                    regressionDays: this.state.regressionDays,
+                    selectedEntry: this.state.selectedEntry,
+                    chartType: this.state.chartType,
+                    regression: false
+                })
+            }
         }
 
         const theme: Theme = {
