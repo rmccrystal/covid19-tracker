@@ -19,6 +19,9 @@ async function getGlobalEntries(): Promise<InfectionEntry[]> {
         if(entry['Country'] == "Total:") {
             return
         }
+        if(entry['Country'] == "World") {
+            return
+        }
         entries.push(new InfectionEntry(
             entry['Country'],
             entry['TotalCases'] ? parseInt(entry['TotalCases'].replace(',', '')) : 0,
@@ -45,6 +48,9 @@ async function getUSEntries(): Promise<InfectionEntry[]> {
     const table = reportsObj[0][0]['table'];
     table.forEach(entry => {
         if(entry['USAState'] == "Total:") {
+            return
+        }
+        if(entry['USAState'] == 'USA Total') {
             return
         }
 
