@@ -37,7 +37,8 @@ export default class InfectionChart extends Component<InfectionChartProps, Infec
         this.props.entries.sort((a, b) => (a.getLatestInfections() < b.getLatestInfections() ? 1 : -1));
     }
 
-    predict(_data: [{x: number, y: number}], days: number): Array<{x: number, y: number}> {
+    // Returns the predictions and the R^2
+    predict(_data: [{x: number, y: number}], days: number): [Array<{x: number, y: number}>, number] {
         // Because we're calculating the first day, we should increase the number of days we actually calculate
         days++;
         let data: Array<[number, number]> = _data
@@ -71,7 +72,7 @@ export default class InfectionChart extends Component<InfectionChartProps, Infec
         for(let i=startingValue; i<startingValue+days; i++) {
             result.push({x: i+firstNonZero, y: Math.round(regr.predict(i)[1]-delta)})
         }
-        return result;
+        return [result, regr.r2];
     }
 
     render() {
@@ -104,11 +105,15 @@ export default class InfectionChart extends Component<InfectionChartProps, Infec
                 }];
                 labelString = "dead";
         }
+
+        let r2: number | undefined = undefined;
         if(this.state.regression) {
+            // @ts-ignore
+            let [predictedData, _r2] = this.predict(data[0].data, this.state.regressionDays);
+            r2 = _r2;
             data.push({
                 id: "Predicted",
-                // @ts-ignore
-                data: this.predict(data[0].data, this.state.regressionDays)
+                data: predictedData
             });
         }
 
@@ -198,7 +203,7 @@ export default class InfectionChart extends Component<InfectionChartProps, Infec
                     <FormGroup>
                         <Switch
                             checked={this.state.regression}
-                            label="Regression"
+                            label={ r2 ? `Regression (R²=${r2})` : "Regression" }
                             onChange={(value) => {
                                 this.setState({
                                     regression: value.currentTarget.checked,
