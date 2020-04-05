@@ -210,7 +210,7 @@ export default class InfectionChart extends Component<InfectionChartProps, Infec
                         >
                             <Radio label="Infections" value="infections"/>
                             <Radio label="Deaths" value="dead"/>
-                            <Radio label="Recovered" value="recovered"/>
+                            <Radio label="Recovered" value="recovered" disabled={data[0].data.filter(i => i[1] != 0).length == 0}/>
                         </RadioGroup>
                     </FormGroup>
                     <FormGroup>
