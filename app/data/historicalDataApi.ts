@@ -28,7 +28,7 @@ class HistoricalInfectionData {
     getAllEntries(): HistoricalInfectionEntry[] {
         var entries: HistoricalInfectionEntry[] = [];
 
-        entries.push(this.getGlobalEntry(), this.getEntriesOutsideChina(), ...this.getUSEntries());
+        entries.push(this.getGlobalEntry(), this.getEntriesOutsideChina(), ...this.getUSEntries(), ...this.getUSStateEntries());
 
         // first push all of the records without states
         this.records.forEach(record => {
@@ -99,10 +99,29 @@ class HistoricalInfectionData {
         return entry
     }
 
+    // Returns entries for all of the counties in the US
     getUSEntries(): HistoricalInfectionEntry[] {
         return this.usRecords.map(record => {
             return record.getHistoricalInfectionEntry()
         })
+    }
+
+    // Returns state by state data by summing all of the
+    // county data for each state
+    getUSStateEntries(): HistoricalInfectionEntry[] {
+        let entries: Map<string, HistoricalInfectionEntry> = new Map<string, HistoricalInfectionEntry>();
+        this.usRecords.forEach(record => {
+            let entry = record.getHistoricalInfectionEntry();
+            let state = record.state;
+            entry.region = state;   // We want the region to be the state
+            if(!entries.get(state)) {        // If there is no state in the list, add it
+                entries.set(state, entry);
+                return;
+            }
+            // else get the state and add it to it
+            entries.set(state, entries.get(state).add(entry));
+        });
+        return Array.from(entries.values());
     }
 }
 
