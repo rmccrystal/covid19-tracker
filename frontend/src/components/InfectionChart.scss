@@ -1,3 +1,10 @@
-.chart-container > text {
-  font-size: 5rem !important;
+.settings-container {
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
+}
+
+.bp3-form-group {
+  margin-left: 2rem !important;
+  margin-right: 2rem !important;
 }

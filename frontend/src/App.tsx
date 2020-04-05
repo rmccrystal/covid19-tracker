@@ -33,8 +33,8 @@ export default class App extends Component<AppProps, AppState> {
         }
     }
 
-        componentDidMount(): void {
-            this.updateInefctionData();
+    componentDidMount(): void {
+        this.updateInefctionData();
         setInterval(this.updateInefctionData.bind(this), 60000);    // Update data every 60 seconds
     }
 
@@ -75,7 +75,7 @@ export default class App extends Component<AppProps, AppState> {
                     <Route path={"/projections"}>
                         {
                             this.state.dataLoaded ?
-                                <Projections data={this.state.data}/>
+                                <Projections data={this.state.data} darkMode={this.state.darkMode}/>
                                 :
                                 <FadeIn>
                                     <LoadingScreen text={"Fetching latest data..."}/>
