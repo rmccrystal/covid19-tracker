@@ -1,5 +1,5 @@
 import React, {Component, CSSProperties} from "react";
-import {Card, Colors, Radio, FormGroup, RadioGroup, Switch, NumericInput, Label} from "@blueprintjs/core";
+import {Card, Radio, FormGroup, RadioGroup, Switch, NumericInput, Label} from "@blueprintjs/core";
 import HistoricalInfectionEntry from "../shared/HistoricalInfectionEntry";
 import {ResponsiveLine, SliceTooltipProps} from "@nivo/line";
 import {Theme} from "@nivo/core";
@@ -161,6 +161,9 @@ export default class InfectionChart extends Component<InfectionChartProps, Infec
                             format: (n: any) => {
                                 return InfectionChart.abbreviateNumber(n)
                             }
+                        }}
+                        axisBottom={{
+                            format: (n: any) => n % 10 == 0 ? n : ""
                         }}
                         margin={{bottom: 50, right: 50, left: 50, top: 50}}
                         enablePoints={false}
