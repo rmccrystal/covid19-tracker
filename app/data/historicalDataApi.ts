@@ -26,7 +26,7 @@ class HistoricalInfectionData {
 
     // Gets all of the latest region records
     getAllEntries(): HistoricalInfectionEntry[] {
-        var entries: HistoricalInfectionEntry[] = [];
+        let entries: HistoricalInfectionEntry[] = [];
         entries.push(this.getGlobalEntry(),
             this.getEntriesOutsideChina(),
             ...this.getCountryEntries(),

@@ -28,7 +28,7 @@ export default class InfectionChart extends Component<InfectionChartProps, Infec
         this.state = {
             selectedEntry: props.entries[0],
             chartType: "infections",
-            regression: true,
+            regression: false,
             regressionDays: 10
         };
     }
