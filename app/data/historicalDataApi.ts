@@ -27,9 +27,19 @@ class HistoricalInfectionData {
     // Gets all of the latest region records
     getAllEntries(): HistoricalInfectionEntry[] {
         var entries: HistoricalInfectionEntry[] = [];
+        entries.push(this.getGlobalEntry(),
+            this.getEntriesOutsideChina(),
+            ...this.getCountryEntries(),
+            ...this.getUSStateEntries(),
+            ...this.getUSCountyEntries());
 
-        entries.push(this.getGlobalEntry(), this.getEntriesOutsideChina(), ...this.getUSEntries(), ...this.getUSStateEntries());
+        // Sort the entries
+        entries = entries.sort((a, b) => a.getLatestInfections()-b.getLatestInfections());
+        return entries;
+    }
 
+    getCountryEntries(): HistoricalInfectionEntry[] {
+        let entries: HistoricalInfectionEntry[] = [];
         // first push all of the records without states
         this.records.forEach(record => {
             if (record.state === undefined) {
@@ -62,6 +72,7 @@ class HistoricalInfectionData {
             summedEntry.region = record.country;
             entries.push(summedEntry)
         });
+
         return entries;
     }
 
@@ -100,7 +111,7 @@ class HistoricalInfectionData {
     }
 
     // Returns entries for all of the counties in the US
-    getUSEntries(): HistoricalInfectionEntry[] {
+    getUSCountyEntries(): HistoricalInfectionEntry[] {
         return this.usRecords.map(record => {
             return record.getHistoricalInfectionEntry()
         })
@@ -109,19 +120,32 @@ class HistoricalInfectionData {
     // Returns state by state data by summing all of the
     // county data for each state
     getUSStateEntries(): HistoricalInfectionEntry[] {
-        let entries: Map<string, HistoricalInfectionEntry> = new Map<string, HistoricalInfectionEntry>();
+        // Map<state, [entry, count]>
+        let entriesMap: Map<string, [HistoricalInfectionEntry, number]> = new Map<string, [HistoricalInfectionEntry, number]>();
         this.usRecords.forEach(record => {
             let entry = record.getHistoricalInfectionEntry();
-            let state = record.state;
+            let state = record.state + ", US";
             entry.region = state;   // We want the region to be the state
-            if(!entries.get(state)) {        // If there is no state in the list, add it
-                entries.set(state, entry);
+            if(!entriesMap.get(state)) {        // If there is no state in the list, add it
+                entriesMap.set(state, [entry, 1]);
                 return;
             }
             // else get the state and add it to it
-            entries.set(state, entries.get(state).add(entry));
+            entriesMap.set(state, [entriesMap.get(state)[0].add(entry), entriesMap.get(state)[1] + 1]);
         });
-        return Array.from(entries.values());
+
+        let entries: HistoricalInfectionEntry[] = [];
+        // only add entries with more than one appearances
+        entriesMap.forEach((value, key) => {
+            // If there is more than one occurrence, add it
+            if (value[1] > 1) {
+                entries.push(value[0]);
+                value[1] = -1;  // Set the count of the value to -1 so we don't use it again
+            }
+        });
+
+
+        return entries;
     }
 }
 
