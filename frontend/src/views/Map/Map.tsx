@@ -7,60 +7,49 @@ import EuropeMap from "./screenshots/europe.png";
 import "./Map.scss";
 import {Card} from "@blueprintjs/core";
 import {Tab, Tabs} from "@blueprintjs/core";
+import InfectionMap from "../../components/InfectionMap";
+import InfectionEntry from "../../shared/InfectionEntry";
+import InfectionData from "../../shared/InfectionData";
 
-interface MapState {
-    selectedMap: string;
+interface MapProps {
+    data: InfectionData;
+    darkMode: boolean;
 }
 
-export default class Map extends Component<{}, MapState> {
-    constructor() {
-        super({});
-        this.state = {selectedMap: USMap};
-    }
-
+export default class Map extends Component<MapProps> {
     render() {
         return (
-            <div className="container-fluid maps-container mt-3">
-                <Card style={{display: "inline-block"}} className="mb-3 pt-1">
-                    <small>Source: New York Times</small>
-                    <Tabs
-                        id="maps-tabs"
-                        vertical={false}
-                        defaultSelectedTabId={"us"}
-                        onChange={(newTabId => {switch(newTabId) {
-                            case "world":
-                                this.setState({selectedMap: WorldMap}); break;
-                            case "us":
-                                this.setState({selectedMap: USMap}); break;
-                            case "asia":
-                                this.setState({selectedMap: AsiaMap}); break;
-                            case "europe":
-                                this.setState({selectedMap: EuropeMap}); break;
-                        }})}
-                    >
-                        <Tab id="world" title="World"/>
-                        <Tab id="us" title="USA"/>
-                        <Tab id="asia" title="Asia"/>
-                        <Tab id="europe" title="Europe"/>
-                    </Tabs>
-                </Card>
-                <MapItem alt="map" mapSrc={(this.state.selectedMap)}/>
+            <div className="container-fluid maps-container">
+                {/*<Card style={{display: "inline-block"}} className="mt-2 mb-2 p-1 pl-3 pr-3">*/}
+                {/*    <Tabs*/}
+                {/*        id="maps-tabs"*/}
+                {/*        vertical={false}*/}
+                {/*        defaultSelectedTabId={"us"}*/}
+                {/*        onChange={(newTabId => {switch(newTabId) {*/}
+                {/*            case "world":*/}
+                {/*                this.setState({selectedMap: WorldMap}); break;*/}
+                {/*            case "us":*/}
+                {/*                this.setState({selectedMap: USMap}); break;*/}
+                {/*            case "asia":*/}
+                {/*                this.setState({selectedMap: AsiaMap}); break;*/}
+                {/*            case "europe":*/}
+                {/*                this.setState({selectedMap: EuropeMap}); break;*/}
+                {/*        }})}*/}
+                {/*    >*/}
+                {/*        <Tab id="world" title="World"/>*/}
+                {/*        <Tab id="us" title="USA"/>*/}
+                {/*        <Tab id="asia" title="Asia"/>*/}
+                {/*        <Tab id="europe" title="Europe"/>*/}
+                {/*    </Tabs>*/}
+                {/*</Card>*/}
+                <div className="map-item mt-3">
+                    <Card className="map-card">
+                        <InfectionMap
+                            entries={this.props.data.entries.filter(entry => entry.category == undefined)}
+                            darkMode={this.props.darkMode} />
+                    </Card>
+                </div>
             </div>
         )
     }
-}
-
-interface MapItemProps {
-    alt: string
-    mapSrc: string
-}
-
-function MapItem(props: MapItemProps) {
-    return (
-        <div className="map-item">
-            <Card className="map-card">
-                <img src={props.mapSrc} className="map" alt={props.alt}/>
-            </Card>
-        </div>
-    )
 }

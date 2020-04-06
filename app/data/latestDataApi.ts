@@ -26,7 +26,13 @@ async function getGlobalEntries(): Promise<InfectionEntry[]> {
             entry['Country'],
             entry['TotalCases'] ? parseInt(entry['TotalCases'].replace(',', '')) : 0,
             entry['TotalDeaths'] ? parseInt(entry['TotalDeaths'].replace(',', '')) : 0,
-            entry['TotalRecovered'] ? parseInt(entry['TotalRecovered'].replace(',', '')) : 0
+            entry['TotalRecovered'] ? parseInt(entry['TotalRecovered'].replace(',', '')) : 0,
+            undefined,
+            entry['Serious_Critical'] ? parseInt(entry['Serious_Critical'].replace(',', '')) : undefined,
+            entry['NewCases'] ? parseInt(entry['NewCases'].replace(',', '')) : undefined,
+            entry['NewDeaths'] ? parseInt(entry['NewDeaths'].replace(',', '')) : undefined,
+            entry['TotCases_1M_Pop'] ? parseInt(entry['TotCases_1M_Pop'].replace(',', '')) : undefined,
+            entry['Deaths/1M pop'] ? parseInt(entry['Deaths/1M pop'].replace(',', '')) : undefined,
         ));
     });
 
@@ -63,8 +69,13 @@ async function getUSEntries(): Promise<InfectionEntry[]> {
             infections,
             dead,
             recovered,
-            "United States"
-        ));
+            "United States",
+            undefined,
+            entry['NewCases'] ? parseInt(entry['NewCases'].replace(',', '')) : undefined,
+            entry['NewDeaths'] ? parseInt(entry['NewDeaths'].replace(',', '')) : undefined,
+            entry['Tot Cases/1M pop'] ? parseInt(entry['Tot Cases/1M pop'].replace(',', '')) : undefined,
+            entry['Deaths/1M pop'] ? parseInt(entry['Deaths/1M pop'].replace(',', '')) : undefined,
+    ));
     });
 
     return entries.sort((a, b) => {

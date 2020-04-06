@@ -71,7 +71,16 @@ export default class App extends Component<AppProps, AppState> {
                     </Route>
                     <Route path={"/about"} component={About}/>
                     <Route path={"/wiki"} component={Wiki}/>
-                    <Route path={"/map"} component={Map}/>
+                    <Route path={"/map"}>
+                        {
+                            this.state.dataLoaded ?
+                                <Map data={this.state.data} darkMode={this.state.darkMode}/>
+                                :
+                                <FadeIn>
+                                    <LoadingScreen text={"Fetching latest data..."}/>
+                                </FadeIn>
+                        }
+                    </Route>
                     <Route path={"/projections"}>
                         {
                             this.state.dataLoaded ?
