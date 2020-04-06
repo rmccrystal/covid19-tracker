@@ -235,6 +235,7 @@ export default class InfectionChart extends Component<InfectionChartProps, Infec
                                 minorStepSize={1}
                                 stepSize={1}
                                 value={this.state.regressionDays}
+                                disabled={!this.state.regression}
                                 onValueChange={(value) => {
                                     this.setState({
                                         regression: this.state.regression,
