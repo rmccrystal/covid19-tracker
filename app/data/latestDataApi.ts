@@ -22,17 +22,20 @@ async function getGlobalEntries(): Promise<InfectionEntry[]> {
         if(entry['Country'] == "World") {
             return
         }
+        if(entry['Country'] == 'UK') {
+            console.log(entry);
+        }
         entries.push(new InfectionEntry(
             entry['Country'],
-            entry['TotalCases'] ? parseInt(entry['TotalCases'].replace(',', '')) : 0,
-            entry['TotalDeaths'] ? parseInt(entry['TotalDeaths'].replace(',', '')) : 0,
-            entry['TotalRecovered'] ? parseInt(entry['TotalRecovered'].replace(',', '')) : 0,
+            parseInt(entry['TotalCases']) ? parseInt(entry['TotalCases'].replace(',', '')) : 0,
+            parseInt(entry['TotalDeaths']) ? parseInt(entry['TotalDeaths'].replace(',', '')) : 0,
+            parseInt(entry['TotalRecovered']) ? parseInt(entry['TotalRecovered'].replace(',', '')) : 0,
             undefined,
-            entry['Serious_Critical'] ? parseInt(entry['Serious_Critical'].replace(',', '')) : undefined,
-            entry['NewCases'] ? parseInt(entry['NewCases'].replace(',', '')) : undefined,
-            entry['NewDeaths'] ? parseInt(entry['NewDeaths'].replace(',', '')) : undefined,
-            entry['TotCases_1M_Pop'] ? parseInt(entry['TotCases_1M_Pop'].replace(',', '')) : undefined,
-            entry['Deaths/1M pop'] ? parseInt(entry['Deaths/1M pop'].replace(',', '')) : undefined,
+            parseInt(entry['Serious_Critical']) ? parseInt(entry['Serious_Critical'].replace(',', '')) : undefined,
+            parseInt(entry['NewCases']) ? parseInt(entry['NewCases'].replace(',', '')) : undefined,
+            parseInt(entry['NewDeaths']) ? parseInt(entry['NewDeaths'].replace(',', '')) : undefined,
+            parseInt(entry['TotCases_1M_Pop']) ? parseInt(entry['TotCases_1M_Pop'].replace(',', '')) : undefined,
+            parseInt(entry['Deaths/1M pop']) ? parseInt(entry['Deaths/1M pop'].replace(',', '')) : undefined,
         ));
     });
 
