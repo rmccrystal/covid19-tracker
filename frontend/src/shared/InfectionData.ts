@@ -53,7 +53,17 @@ export default class InfectionData {
         let historicalEntries: HistoricalInfectionEntry[] = [];
 
         json['entries'].forEach((item: any) => {
-            entries.push(new InfectionEntry(item.region, parseInt(item.infections), parseInt(item.dead), parseInt(item.recovered), item.category))
+            entries.push(new InfectionEntry(item.region,
+                parseInt(item.infections),
+                parseInt(item.dead),
+                parseInt(item.recovered),
+                item.category,
+                item['criticalCases'] ? parseInt(item.criticalCases) : undefined,
+                item['newCases'] ? parseInt(item.newCases) : undefined,
+                item['newDeaths'] ? parseInt(item.newDeaths) : undefined,
+                item['casesPer1M'] ? parseInt(item.casesPer1M) : undefined,
+                item['deathsPer1M'] ? parseInt(item.deathsPer1M) : undefined,
+                ))
         });
         json['historicalEntries'].forEach((entry: any) => {
             historicalEntries.push(HistoricalInfectionEntry.fromJson(entry));
