@@ -2,7 +2,7 @@ import React, {Component} from "react";
 import InfectionEntry from "../shared/InfectionEntry";
 import {Card, Elevation, H2, HTMLTable, Icon} from "@blueprintjs/core";
 import "./InfectionTable.scss"
-import {useTable, useSortBy} from "react-table";
+import {useTable, useSortBy, Column} from "react-table";
 
 interface InfectionTableProps {
     entries: InfectionEntry[]
@@ -57,8 +57,7 @@ const InfectionTableComponent = (props: InfectionTableComponentProps) => {
             Header: "Recovered",
             accessor: "recovered",
             sortDescFirst: true,
-            show: enableRecoveredColumn
-        }], []);
+        }] as Column<InfectionEntry>[], []);
 
     const {
         getTableProps,
