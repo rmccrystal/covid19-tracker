@@ -3,6 +3,7 @@ import InfectionEntry from "../shared/InfectionEntry";
 import {Card, Elevation, H2, HTMLTable, Icon} from "@blueprintjs/core";
 import "./InfectionTable.scss"
 import {useTable, useSortBy} from "react-table";
+import matchSorter from "match-sorter";
 
 interface InfectionTableProps {
     entries: InfectionEntry[]
@@ -38,10 +39,17 @@ interface InfectionTableComponentProps {
 const InfectionTableComponent = (props: InfectionTableComponentProps) => {
     const data = React.useMemo(() => props.entries, []);
     const enableRecoveredColumn: boolean = props.entries.filter(entry => entry.recovered != undefined).length != 0;
+    const filterTypes = React.useMemo(() => ({
+        fuzzy: (rows: any, id: any, filterValue: any) => {
+            // @ts-ignore
+            return matchSorter(rows, filterValue, { keys: [row => row.values[id]] })
+        }
+    }), []);
     const columns = React.useMemo(() => [
         {
             Header: "Region",
             accessor: "region",
+            filter: "fuzzy"
         },
         {
             Header: "Infections",
